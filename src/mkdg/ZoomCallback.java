@@ -3,19 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package projekt13;
+package mkdg;
+
+import java.awt.Image;
 
 /**
  *
  * @author daroslav
  */
-public class Projekt13 {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        new MainFrame().setVisible(true);
-    }
-    
+public interface ZoomCallback {
+    public void zoomed(Image image, int x1, int y1, int x2, int y2);
 }
