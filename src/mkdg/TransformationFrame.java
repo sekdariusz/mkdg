@@ -7,13 +7,15 @@ package mkdg;
 
 import static java.awt.image.ImageObserver.HEIGHT;
 import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.w3c.dom.css.Rect;
 
 /**
  *
  * @author daroslav
  */
-public class TransformationFrame extends javax.swing.JFrame {
+public class TransformationFrame extends javax.swing.JFrame implements ChangeListener {
 
     
     private Method method;
@@ -23,6 +25,7 @@ public class TransformationFrame extends javax.swing.JFrame {
     private int height;
     
     private JSlider thresholdSlider;
+    private TransformationCanvas canvas;
     
     /**
      * Creates new form TransformationFrame
@@ -86,10 +89,11 @@ public class TransformationFrame extends javax.swing.JFrame {
 
 
     private void showBinaryImage() {
-        TransformationCanvas canvas = new TransformationCanvas(rgbModel);
+                
+        canvas = new TransformationCanvas(rgbModel);
         this.setBounds(0, 0, (int)(width*canvas.getTileSize() * 1.3), (int)(height*canvas.getTileSize() * 1.3));
         this.invalidate();
-        binaryImagePanel.setBounds(0,0, this.getWidth(), this.getHeight());
+        binaryImagePanel.setBounds(0,0, this.getWidth(), height*canvas.getTileSize());
         binaryImagePanel.invalidate();
         
         canvas.setBounds((binaryImagePanel.getWidth() - width*canvas.getTileSize())/2, 
@@ -99,14 +103,35 @@ public class TransformationFrame extends javax.swing.JFrame {
         
         binaryImagePanel.add(canvas);
         binaryImagePanel.invalidate();
-        
         canvas.repaint();
 
+        thresholdSlider = new JSlider();
+        thresholdSlider.setBounds(20, binaryImagePanel.getHeight() + 10, binaryImagePanel.getWidth() - 40, 25);
+        thresholdSlider.setVisible(true);
+        binaryImagePanel.add(thresholdSlider);
+        binaryImagePanel.invalidate();
+        thresholdSlider.setMinimum(0);
+        thresholdSlider.setMaximum(100);
+        thresholdSlider.setValue(20);
+        thresholdSlider.setMajorTickSpacing(10);
+        thresholdSlider.setPaintTicks(true);
+        thresholdSlider.addChangeListener(this);
         
-        //thresholdSlider = new JSlider();
-        //thresholdSlider.setBounds(20, height*canvas.getTileSize() + 50, binaryImagePanel.getWidth() - 40, 10);
-        //thresholdSlider.setVisible(true);
     }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        Object source = e.getSource();
+        if(source instanceof JSlider) {
+            JSlider theJSlider = (JSlider) source;
+            //if (!theJSlider.getValueIsAdjusting()) {
+                System.out.println("Slider changed: " + theJSlider.getValue());
+                rgbModel.setThreshold(theJSlider.getValue());
+                canvas.updateBinaryImage();
+            //}
+        }
+    }
+ 
     
     public enum Method {
         Erosion, Dilation

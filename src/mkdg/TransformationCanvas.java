@@ -57,4 +57,9 @@ public class TransformationCanvas extends Canvas {
     public int getTileSize() {
         return this.tilesize;
     }
+    
+    public void updateBinaryImage() {
+        this.binaryModel = rgbModel.getImageAsBinaryArray();
+        this.repaint();
+    }
 }
