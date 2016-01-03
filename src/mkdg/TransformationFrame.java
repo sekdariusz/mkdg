@@ -43,6 +43,8 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
         this.width = width;
         this.height = height;
         
+        System.out.println("w: " + width + " h: " + height);
+        
         initComponents();
         showBinaryImage();
         initAditionalElements();
@@ -113,7 +115,9 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
     }
     
     private void showImageAfterProcess(int[][] binaryModelAfterProcess) {
-           
+        
+        this.setBounds(0,0, width*originalCanvas.getTileSize() * 2 + 20, this.getHeight());
+
         if(afterProcessCanvas != null) {
             binaryImagePanel.remove(afterProcessCanvas);
         }
@@ -131,13 +135,7 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
                                      width*originalCanvas.getTileSize(),
                                      height*originalCanvas.getTileSize());
         
-        binaryImagePanel.add(afterProcessCanvas);
-        binaryImagePanel.invalidate();
-        afterProcessCanvas.repaint();
-        
-        this.setBounds(0,0, width*originalCanvas.getTileSize() * 2 + 20, this.getHeight());
-        this.thresholdSlider.invalidate();
-        this.processButton.invalidate();
+        binaryImagePanel.add(afterProcessCanvas);        
     }
     
     private void initAditionalElements() {
@@ -154,7 +152,7 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
         thresholdSlider.addChangeListener(this);
         
         processButton = new JButton();
-        processButton.setBounds(20, thresholdSlider.getY() + 35, width*originalCanvas.getTileSize() + 10 - 40, 25);
+        processButton.setBounds(20, thresholdSlider.getWidth() + 10, width*originalCanvas.getTileSize() + 10 - 40, 25);
         if(method == Method.Dilation) {
             processButton.setText("Dylatacja");
         } else {
@@ -202,10 +200,18 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
  
     int[][] dilate(int[][] image){
         int[][] imagecopy = new int[image.length][image[0].length];
+        
+        for (int i = 0; i < imagecopy.length; i++) {
+            for (int j = 0; j < imagecopy[0].length; j++) {
+                imagecopy[i][j] = image[i][j];
+            }
+        }
+        
         for (int i=0; i<image.length; i++){
             for (int j=0; j<image[i].length; j++){
                 if (image[i][j] == 1){
-                    imagecopy[i][j] = 1;
+                    if (structuralElement[1][1] == 1) imagecopy[i][j] = 1;
+                    
                     if (structuralElement[0][1] == 1 && i>0) imagecopy[i-1][j] = 1;
                     if (structuralElement[1][0] == 1 && j>0) imagecopy[i][j-1] = 1;
                     if (structuralElement[2][1] == 1 && i+1<image.length) imagecopy[i+1][j] = 1;
@@ -225,13 +231,14 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
         int[][] imagecopy = new int[image.length][image[0].length];
         for (int i = 0; i < imagecopy.length; i++) {
             for (int j = 0; j < imagecopy[0].length; j++) {
-                imagecopy[i][j] = 1;
+                imagecopy[i][j] = image[i][j];
             }
         }
         for (int i=0; i<image.length; i++){
             for (int j=0; j<image[i].length; j++){
                 if (image[i][j] == 0){
-                    imagecopy[i][j] = 0;
+                    if (structuralElement[1][1] == 1) imagecopy[i][j] = 0;
+                    
                     if (structuralElement[0][1] == 1 && i>0) imagecopy[i-1][j] = 0;
                     if (structuralElement[1][0] == 1 && j>0) imagecopy[i][j-1] = 0;
                     if (structuralElement[2][1] == 1 && i+1<image.length) imagecopy[i+1][j] = 0;

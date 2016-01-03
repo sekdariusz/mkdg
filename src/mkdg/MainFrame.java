@@ -366,15 +366,15 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         float aspectRatio = (float)croppedImage.getWidth() / (float)croppedImage.getHeight();
 
         if(croppedImage.getHeight() < croppedImage.getWidth()) {
-            width = zoomedImagePanel.getWidth() - 50;
+            width = (zoomedImagePanel.getWidth() - 60)/10;
             height = (int)((float)width / aspectRatio);
         } else {
-            height = zoomedImagePanel.getHeight() - 50;
+            height = (zoomedImagePanel.getHeight() - 60)/10;
             width = (int)(aspectRatio * (float)height);
         }
         
-        croppedImage = createResizedCopy(croppedImage, width, height, false);
-        zoomedImage = croppedImage;
+        zoomedImage = createResizedCopy(croppedImage, width, height, false);
+        croppedImage = createResizedCopy(zoomedImage, width*10, height*10, false);
         
         ZoomedImageCanvas canvas = new ZoomedImageCanvas(croppedImage);
         canvas.setBounds((zoomedImagePanel.getWidth() - croppedImage.getWidth(null))/2, (zoomedImagePanel.getHeight() - croppedImage.getHeight(null))/2, croppedImage.getWidth(null), croppedImage.getHeight(null));

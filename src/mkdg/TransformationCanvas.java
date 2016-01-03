@@ -22,7 +22,7 @@ public class TransformationCanvas extends Canvas {
     private int[][] binaryModel;
     private int width;
     private int height;
-    private int tilesize = 1; //default
+    private int tilesize = 10; //default
         
     public TransformationCanvas(FastRGB rgbModel) {
         this.rgbModel = rgbModel;
@@ -39,7 +39,7 @@ public class TransformationCanvas extends Canvas {
     
     @Override
     public void paint(Graphics g) {
-        
+                
         g.setColor(Color.white);
         g.fillRect(0, 0, width * tilesize, height * tilesize);
         
