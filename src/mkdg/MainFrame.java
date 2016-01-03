@@ -274,11 +274,13 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             
             if (result == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = fileChooser.getSelectedFile();
+                filePathEditText.setText(selectedFile.getAbsolutePath());
                 saveLastPath(selectedFile);
                 showFileAsImage(selectedFile);
             }
         } else {
             File selectedFile = new File(filePathEditText.getText());
+            filePathEditText.setText(selectedFile.getAbsolutePath());
             saveLastPath(selectedFile);
             showFileAsImage(selectedFile);
             loadPreviousConfiguration = false;
@@ -310,7 +312,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     }
     
     private void saveLastPath(File selectedFile) {
-        String[] dividedPath = selectedFile.getAbsolutePath().split(File.separator);
+        String[] dividedPath = selectedFile.getAbsolutePath().split(""+File.separator+File.separator);
         dividedPath = Arrays.copyOf(dividedPath, dividedPath.length - 1);
         StringBuilder pathWithoutLastSegment = new StringBuilder();
         for (String s : dividedPath) {
@@ -320,7 +322,6 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         lastChoosenPath = pathWithoutLastSegment.toString();
         System.out.println("Selected file: " + selectedFile.getAbsolutePath()); 
         System.out.println("Last path: " + lastChoosenPath); 
-        filePathEditText.setText(selectedFile.getAbsolutePath());
         
         Properties prop = new Properties();
         prop.setProperty("dir", lastChoosenPath);
