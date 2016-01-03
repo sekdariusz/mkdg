@@ -5,10 +5,16 @@
  */
 package mkdg;
 
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import static java.awt.image.ImageObserver.HEIGHT;
+import java.util.Properties;
 import javax.swing.JButton;
+import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -21,7 +27,6 @@ import org.w3c.dom.css.Rect;
 public class TransformationFrame extends javax.swing.JFrame implements ChangeListener, ActionListener {
 
     
-    private Method method;
     private FastRGB rgbModel;
     private int[][] structuralElement;
     private int[][] processedImage;
@@ -29,16 +34,17 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
     private int height;
     
     private JSlider thresholdSlider;
-    private JButton processButton;
+    private JButton dilationButton;
+    private JButton erosionButton;
     private TransformationCanvas originalCanvas;
     private TransformationCanvas afterProcessCanvas;
+    private GridBagConstraints c;
     
     /**
      * Creates new form TransformationFrame
      */
-    public TransformationFrame(FastRGB rgbModel, Method method, int[][] structuralElement, int width, int height) {
+    public TransformationFrame(FastRGB rgbModel, int[][] structuralElement, int width, int height) {
         this.rgbModel = rgbModel;
-        this.method = method;
         this.structuralElement = structuralElement;
         this.width = width;
         this.height = height;
@@ -46,8 +52,14 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
         System.out.println("w: " + width + " h: " + height);
         
         initComponents();
+        
+        binaryImagePanel.setLayout(new GridBagLayout());
+        c = new GridBagConstraints();
+        c.insets = new Insets(6,6,6,6);
+
         showBinaryImage();
         initAditionalElements();
+      
     }
 
     /**
@@ -109,14 +121,18 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
                          width*originalCanvas.getTileSize(),
                          height*originalCanvas.getTileSize());
         
-        binaryImagePanel.add(originalCanvas);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 0;
+        
+        binaryImagePanel.add(originalCanvas, c);
         binaryImagePanel.invalidate();
         originalCanvas.repaint();     
     }
     
     private void showImageAfterProcess(int[][] binaryModelAfterProcess) {
         
-        this.setBounds(0,0, width*originalCanvas.getTileSize() * 2 + 20, this.getHeight());
+        //this.setPreferredSize(new Dimension((int)(width*originalCanvas.getTileSize() * 2 + 20), this.getHeight()));
 
         if(afterProcessCanvas != null) {
             binaryImagePanel.remove(afterProcessCanvas);
@@ -134,15 +150,23 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
                                      0, 
                                      width*originalCanvas.getTileSize(),
                                      height*originalCanvas.getTileSize());
-        
-        binaryImagePanel.add(afterProcessCanvas);        
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 1;
+        c.gridy = 0;
+        binaryImagePanel.add(afterProcessCanvas, c);       
+        this.pack();
     }
     
     private void initAditionalElements() {
         thresholdSlider = new JSlider();
         thresholdSlider.setBounds(20, binaryImagePanel.getHeight() + 10, width*originalCanvas.getTileSize() + 10 - 40, 25);
         thresholdSlider.setVisible(true);
-        binaryImagePanel.add(thresholdSlider);
+        
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 1;
+        binaryImagePanel.add(thresholdSlider, c);
+        
         binaryImagePanel.invalidate();
         thresholdSlider.setMinimum(0);
         thresholdSlider.setMaximum(100);
@@ -151,16 +175,29 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
         thresholdSlider.setPaintTicks(true);
         thresholdSlider.addChangeListener(this);
         
-        processButton = new JButton();
-        processButton.setBounds(20, thresholdSlider.getWidth() + 10, width*originalCanvas.getTileSize() + 10 - 40, 25);
-        if(method == Method.Dilation) {
-            processButton.setText("Dylatacja");
-        } else {
-            processButton.setText("Erozja");
-        }
-        binaryImagePanel.add(processButton);
-        processButton.addActionListener(this);
+        dilationButton = new JButton();
+        dilationButton.setBounds(20, thresholdSlider.getX() + thresholdSlider.getWidth() + 10, width*originalCanvas.getTileSize() + 10 - 40, 25);
+        dilationButton.setText("Dylatacja"); 
         
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 2;
+        binaryImagePanel.add(dilationButton, c);
+        
+        dilationButton.addActionListener(this);
+        
+        erosionButton = new JButton();
+        erosionButton.setBounds(20, dilationButton.getX() + dilationButton.getWidth() + 10, width*originalCanvas.getTileSize() + 10 - 40, 25);
+        erosionButton.setText("Erozja");
+       
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 3;
+        binaryImagePanel.add(erosionButton, c);
+        
+        erosionButton.addActionListener(this);
+        
+        this.pack();
     }
 
     @Override
@@ -172,6 +209,7 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
                 System.out.println("Slider changed: " + theJSlider.getValue());
                 rgbModel.setThreshold(theJSlider.getValue());
                 originalCanvas.updateBinaryImage();
+                processedImage = null;
             //}
         }
     }
@@ -179,23 +217,21 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
-        if(source instanceof JButton) {
-            if(method == Method.Dilation) {
-                if(processedImage == null) {
-                    processedImage = dilate(rgbModel.getImageAsBinaryArray());
-                } else {
-                    processedImage = dilate(processedImage);
-                }
-                showImageAfterProcess(processedImage);
+        if(source == dilationButton) {
+            if(processedImage == null) {
+                processedImage = dilate(rgbModel.getImageAsBinaryArray());
             } else {
-                if(processedImage == null) {
-                    processedImage = erode(rgbModel.getImageAsBinaryArray());
-                } else {
-                    processedImage = erode(processedImage);
-                }
-                showImageAfterProcess(processedImage);
+                processedImage = dilate(processedImage);
             }
-        }
+            showImageAfterProcess(processedImage);
+        } else {
+            if(processedImage == null) {
+                processedImage = erode(rgbModel.getImageAsBinaryArray());
+            } else {
+                processedImage = erode(processedImage);
+            }
+            showImageAfterProcess(processedImage);
+        }       
     }
  
     int[][] dilate(int[][] image){
@@ -252,10 +288,6 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
             }
         }
         return imagecopy;
-    }
-    
-    public enum Method {
-        Erosion, Dilation
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

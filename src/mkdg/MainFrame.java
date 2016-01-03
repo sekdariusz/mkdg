@@ -12,14 +12,19 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import mkdg.TransformationFrame.Method;
 import org.w3c.dom.css.Rect;
 
 /**
@@ -31,6 +36,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     private String lastChoosenPath;
     private ElementCanvas elementCanvas;
     private BufferedImage zoomedImage;
+    private boolean loadPreviousConfiguration = false;
     
     /**
      * Creates new form MainFrame
@@ -38,6 +44,30 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     public MainFrame() {
         initComponents();
         initChooseElement();
+        
+        Properties prop = new Properties();
+        InputStream is = null;
+        File f = new File("user.properties");
+        if(f.exists()) {
+            try {
+                is = new FileInputStream(f);
+                prop.load(is);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            String file = prop.getProperty("file", null);
+            String dir = prop.getProperty("dir", null);
+            if(file != null) {
+                filePathEditText.setText(file);
+                loadPreviousConfiguration = true;
+                loadImageButton.doClick();
+            }
+            if(dir != null) {
+                lastChoosenPath = dir;
+            }
+        }
     }
     
     private void initChooseElement() {
@@ -60,12 +90,11 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         tabbedPane = new javax.swing.JTabbedPane();
         teachPanel = new javax.swing.JPanel();
         binaryImagePanel = new javax.swing.JPanel();
-        loadImageButton = new javax.swing.JButton();
-        filePathEditText = new javax.swing.JTextField();
         zoomedImagePanel = new javax.swing.JPanel();
         elementPanel = new javax.swing.JPanel();
-        showErosionButton = new javax.swing.JButton();
-        showDilationButton = new javax.swing.JButton();
+        processButton = new javax.swing.JButton();
+        filePathEditText = new javax.swing.JTextField();
+        loadImageButton = new javax.swing.JButton();
         programPanel = new javax.swing.JPanel();
         gamePanel = new javax.swing.JPanel();
 
@@ -95,30 +124,17 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             .addGap(0, 312, Short.MAX_VALUE)
         );
 
-        loadImageButton.setText("Wczytaj dowolny obraz");
-        loadImageButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadImageButtonActionPerformed(evt);
-            }
-        });
-
-        filePathEditText.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                filePathEditTextActionPerformed(evt);
-            }
-        });
-
         zoomedImagePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Powiększony fragment", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP));
 
         javax.swing.GroupLayout zoomedImagePanelLayout = new javax.swing.GroupLayout(zoomedImagePanel);
         zoomedImagePanel.setLayout(zoomedImagePanelLayout);
         zoomedImagePanelLayout.setHorizontalGroup(
             zoomedImagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 369, Short.MAX_VALUE)
         );
         zoomedImagePanelLayout.setVerticalGroup(
             zoomedImagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 312, Short.MAX_VALUE)
         );
 
         elementPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Stwórz element strukturalny", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
@@ -134,17 +150,23 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             .addGap(0, 126, Short.MAX_VALUE)
         );
 
-        showErosionButton.setText("Pokaż erozję");
-        showErosionButton.addActionListener(new java.awt.event.ActionListener() {
+        processButton.setText("Przetwórz obraz");
+        processButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                showErosionButtonActionPerformed(evt);
+                processButtonActionPerformed(evt);
             }
         });
 
-        showDilationButton.setText("Pokaż dylatację");
-        showDilationButton.addActionListener(new java.awt.event.ActionListener() {
+        filePathEditText.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                showDilationButtonActionPerformed(evt);
+                filePathEditTextActionPerformed(evt);
+            }
+        });
+
+        loadImageButton.setText("Wczytaj dowolny obraz");
+        loadImageButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadImageButtonActionPerformed(evt);
             }
         });
 
@@ -152,41 +174,35 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         teachPanel.setLayout(teachPanelLayout);
         teachPanelLayout.setHorizontalGroup(
             teachPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(loadImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, 770, Short.MAX_VALUE)
             .addGroup(teachPanelLayout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(teachPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(elementPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(binaryImagePanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(teachPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(filePathEditText)
-                    .addGroup(teachPanelLayout.createSequentialGroup()
-                        .addGroup(teachPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(elementPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(binaryImagePanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(teachPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(zoomedImagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(showErosionButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(showDilationButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(zoomedImagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(processButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(loadImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
+                    .addComponent(filePathEditText, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
         teachPanelLayout.setVerticalGroup(
             teachPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(teachPanelLayout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addComponent(filePathEditText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(loadImageButton)
+                .addGroup(teachPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(binaryImagePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(zoomedImagePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(teachPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(binaryImagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(zoomedImagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(teachPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(elementPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(teachPanelLayout.createSequentialGroup()
-                        .addComponent(showErosionButton)
+                        .addComponent(filePathEditText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(showDilationButton)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(loadImageButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(processButton))
+                    .addComponent(elementPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0))
         );
 
         tabbedPane.addTab("Nauka", teachPanel);
@@ -199,7 +215,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         );
         programPanelLayout.setVerticalGroup(
             programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 575, Short.MAX_VALUE)
+            .addGap(0, 495, Short.MAX_VALUE)
         );
 
         tabbedPane.addTab("Program", programPanel);
@@ -212,7 +228,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         );
         gamePanelLayout.setVerticalGroup(
             gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 575, Short.MAX_VALUE)
+            .addGap(0, 495, Short.MAX_VALUE)
         );
 
         tabbedPane.addTab("Gra", gamePanel);
@@ -228,9 +244,10 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 616, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 541, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
         );
 
         pack();
@@ -242,43 +259,40 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
 
     private void loadImageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadImageButtonActionPerformed
         
-        JFileChooser fileChooser = new JFileChooser();
+        if(!loadPreviousConfiguration) {
+            JFileChooser fileChooser = new JFileChooser();
         
-        String pathToLoad;
-        if(lastChoosenPath == null) {
-            pathToLoad = System.getProperty("user.home");
+            String pathToLoad;
+            if(lastChoosenPath == null) {
+                pathToLoad = System.getProperty("user.home");
+            } else {
+                pathToLoad = lastChoosenPath;
+            }
+        
+            fileChooser.setCurrentDirectory(new File(pathToLoad));
+            int result = fileChooser.showOpenDialog(this);
+            
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                saveLastPath(selectedFile);
+                showFileAsImage(selectedFile);
+            }
         } else {
-            pathToLoad = lastChoosenPath;
-        }
-        
-        fileChooser.setCurrentDirectory(new File(pathToLoad));
-        int result = fileChooser.showOpenDialog(this);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
+            File selectedFile = new File(filePathEditText.getText());
             saveLastPath(selectedFile);
             showFileAsImage(selectedFile);
+            loadPreviousConfiguration = false;
         }
     }//GEN-LAST:event_loadImageButtonActionPerformed
 
-    private void showErosionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showErosionButtonActionPerformed
+    private void processButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_processButtonActionPerformed
         checkIfImagesAreLoded();
         new TransformationFrame(new FastRGB(zoomedImage), 
-                                Method.Erosion, 
                                 makeStructuralElement(),
                                 zoomedImage.getWidth(), 
                                 zoomedImage.getHeight())
                                 .setVisible(true);
-    }//GEN-LAST:event_showErosionButtonActionPerformed
-
-    private void showDilationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showDilationButtonActionPerformed
-        checkIfImagesAreLoded();
-        new TransformationFrame(new FastRGB(zoomedImage), 
-                                Method.Dilation, 
-                                makeStructuralElement(),
-                                zoomedImage.getWidth(), 
-                                zoomedImage.getHeight())
-                                .setVisible(true);
-    }//GEN-LAST:event_showDilationButtonActionPerformed
+    }//GEN-LAST:event_processButtonActionPerformed
 
     private void checkIfImagesAreLoded() {
         if(binaryImagePanel.getComponentCount() == 0) {
@@ -307,6 +321,20 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         System.out.println("Selected file: " + selectedFile.getAbsolutePath()); 
         System.out.println("Last path: " + lastChoosenPath); 
         filePathEditText.setText(selectedFile.getAbsolutePath());
+        
+        Properties prop = new Properties();
+        prop.setProperty("dir", lastChoosenPath);
+        prop.setProperty("file", selectedFile.getAbsolutePath());
+        File f = new File("user.properties");
+        OutputStream out;
+        try {
+            out = new FileOutputStream(f);
+            prop.store(out, "");
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     private void showFileAsImage(File selectedFile) {
@@ -348,9 +376,8 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     private javax.swing.JPanel gamePanel;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton loadImageButton;
+    private javax.swing.JButton processButton;
     private javax.swing.JPanel programPanel;
-    private javax.swing.JButton showDilationButton;
-    private javax.swing.JButton showErosionButton;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JPanel teachPanel;
     private javax.swing.JPanel zoomedImagePanel;
