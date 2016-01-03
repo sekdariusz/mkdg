@@ -22,11 +22,17 @@ public class TransformationCanvas extends Canvas {
     private int[][] binaryModel;
     private int width;
     private int height;
-    private int tilesize = 2; //default
+    private int tilesize = 1; //default
         
     public TransformationCanvas(FastRGB rgbModel) {
         this.rgbModel = rgbModel;
         this.binaryModel = rgbModel.getImageAsBinaryArray();
+        this.width = binaryModel.length;
+        this.height = binaryModel[0].length;
+    }
+    
+     public TransformationCanvas(int[][] binaryModel) {
+        this.binaryModel = binaryModel;
         this.width = binaryModel.length;
         this.height = binaryModel[0].length;
     }
@@ -61,5 +67,28 @@ public class TransformationCanvas extends Canvas {
     public void updateBinaryImage() {
         this.binaryModel = rgbModel.getImageAsBinaryArray();
         this.repaint();
+        
+        new java.util.Timer().schedule( 
+            new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    TransformationCanvas.this.repaint();
+                }
+            }, 
+        100);
+    }
+    
+     public void updateBinaryImage(int[][] newImage) {
+        this.binaryModel = newImage;
+        this.repaint();
+        
+         new java.util.Timer().schedule( 
+            new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    TransformationCanvas.this.repaint();
+                }
+            }, 
+        100);
     }
 }

@@ -5,7 +5,10 @@
  */
 package mkdg;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import static java.awt.image.ImageObserver.HEIGHT;
+import javax.swing.JButton;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -15,17 +18,20 @@ import org.w3c.dom.css.Rect;
  *
  * @author daroslav
  */
-public class TransformationFrame extends javax.swing.JFrame implements ChangeListener {
+public class TransformationFrame extends javax.swing.JFrame implements ChangeListener, ActionListener {
 
     
     private Method method;
     private FastRGB rgbModel;
     private int[][] structuralElement;
+    private int[][] processedImage;
     private int width;
     private int height;
     
     private JSlider thresholdSlider;
-    private TransformationCanvas canvas;
+    private JButton processButton;
+    private TransformationCanvas originalCanvas;
+    private TransformationCanvas afterProcessCanvas;
     
     /**
      * Creates new form TransformationFrame
@@ -39,6 +45,7 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
         
         initComponents();
         showBinaryImage();
+        initAditionalElements();
     }
 
     /**
@@ -89,24 +96,53 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
 
 
     private void showBinaryImage() {
-                
-        canvas = new TransformationCanvas(rgbModel);
-        this.setBounds(0, 0, (int)(width*canvas.getTileSize() * 1.3), (int)(height*canvas.getTileSize() * 1.3));
+        originalCanvas = new TransformationCanvas(rgbModel);
+        this.setBounds(0,0, width*originalCanvas.getTileSize() + 10, this.getHeight());
         this.invalidate();
-        binaryImagePanel.setBounds(0,0, this.getWidth(), height*canvas.getTileSize());
+        binaryImagePanel.setBounds((this.getWidth() - width*originalCanvas.getTileSize() + 10)/2, 0, width*originalCanvas.getTileSize() + 10, height*originalCanvas.getTileSize());
         binaryImagePanel.invalidate();
         
-        canvas.setBounds((binaryImagePanel.getWidth() - width*canvas.getTileSize())/2, 
+        originalCanvas.setBounds((binaryImagePanel.getWidth() - width*originalCanvas.getTileSize())/2, 
                          0, 
-                         width*canvas.getTileSize(),
-                         height*canvas.getTileSize());
+                         width*originalCanvas.getTileSize(),
+                         height*originalCanvas.getTileSize());
         
-        binaryImagePanel.add(canvas);
+        binaryImagePanel.add(originalCanvas);
         binaryImagePanel.invalidate();
-        canvas.repaint();
-
+        originalCanvas.repaint();     
+    }
+    
+    private void showImageAfterProcess(int[][] binaryModelAfterProcess) {
+           
+        if(afterProcessCanvas != null) {
+            binaryImagePanel.remove(afterProcessCanvas);
+        }
+          
+        afterProcessCanvas = new TransformationCanvas(binaryModelAfterProcess);
+        binaryImagePanel.setBounds(0,0, width*originalCanvas.getTileSize() * 2 + 20, height*originalCanvas.getTileSize());
+        
+        originalCanvas.setBounds(5, 
+                                 0, 
+                                 width*originalCanvas.getTileSize(),
+                                 height*originalCanvas.getTileSize());
+        
+        afterProcessCanvas.setBounds(originalCanvas.getWidth() + 10, 
+                                     0, 
+                                     width*originalCanvas.getTileSize(),
+                                     height*originalCanvas.getTileSize());
+        
+        binaryImagePanel.add(afterProcessCanvas);
+        binaryImagePanel.invalidate();
+        afterProcessCanvas.repaint();
+        
+        this.setBounds(0,0, width*originalCanvas.getTileSize() * 2 + 20, this.getHeight());
+        this.thresholdSlider.invalidate();
+        this.processButton.invalidate();
+    }
+    
+    private void initAditionalElements() {
         thresholdSlider = new JSlider();
-        thresholdSlider.setBounds(20, binaryImagePanel.getHeight() + 10, binaryImagePanel.getWidth() - 40, 25);
+        thresholdSlider.setBounds(20, binaryImagePanel.getHeight() + 10, width*originalCanvas.getTileSize() + 10 - 40, 25);
         thresholdSlider.setVisible(true);
         binaryImagePanel.add(thresholdSlider);
         binaryImagePanel.invalidate();
@@ -116,6 +152,16 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
         thresholdSlider.setMajorTickSpacing(10);
         thresholdSlider.setPaintTicks(true);
         thresholdSlider.addChangeListener(this);
+        
+        processButton = new JButton();
+        processButton.setBounds(20, thresholdSlider.getY() + 35, width*originalCanvas.getTileSize() + 10 - 40, 25);
+        if(method == Method.Dilation) {
+            processButton.setText("Dylatacja");
+        } else {
+            processButton.setText("Erozja");
+        }
+        binaryImagePanel.add(processButton);
+        processButton.addActionListener(this);
         
     }
 
@@ -127,11 +173,48 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
             //if (!theJSlider.getValueIsAdjusting()) {
                 System.out.println("Slider changed: " + theJSlider.getValue());
                 rgbModel.setThreshold(theJSlider.getValue());
-                canvas.updateBinaryImage();
+                originalCanvas.updateBinaryImage();
             //}
         }
     }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object source = e.getSource();
+        if(source instanceof JButton) {
+            if(method == Method.Dilation) {
+                if(processedImage == null) {
+                    processedImage = dilate(rgbModel.getImageAsBinaryArray());
+                } else {
+                    processedImage = dilate(processedImage);
+                }
+                showImageAfterProcess(processedImage);
+            } else {
+                
+            }
+        }
+    }
  
+    int[][] dilate(int[][] image){
+        int[][] imagecopy = new int[image.length][image[0].length];
+        for (int i=0; i<image.length; i++){
+            for (int j=0; j<image[i].length; j++){
+                if (image[i][j] == 1){
+                    imagecopy[i][j] = 1;
+                    if (structuralElement[0][1] == 1 && i>0) imagecopy[i-1][j] = 1;
+                    if (structuralElement[1][0] == 1 && j>0) imagecopy[i][j-1] = 1;
+                    if (structuralElement[2][1] == 1 && i+1<image.length) imagecopy[i+1][j] = 1;
+                    if (structuralElement[1][2] == 1 && j+1<image[i].length) imagecopy[i][j+1] = 1;
+                    
+                    if (structuralElement[0][0] == 1 && i>0 && j>0) imagecopy[i-1][j-1] = 1;
+                    if (structuralElement[0][2] == 1 && i>0 && j+1<image[i].length) imagecopy[i-1][j+1] = 1;
+                    if (structuralElement[2][0] == 1 && i+1<image.length && j>0) imagecopy[i+1][j-1] = 1;
+                    if (structuralElement[2][2] == 1 && i+1<image.length && j+1<image[i].length) imagecopy[i+1][j+1] = 1;
+                }
+            }
+        }
+        return imagecopy;
+    }
     
     public enum Method {
         Erosion, Dilation
