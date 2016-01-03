@@ -190,7 +190,12 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
                 }
                 showImageAfterProcess(processedImage);
             } else {
-                
+                if(processedImage == null) {
+                    processedImage = erode(rgbModel.getImageAsBinaryArray());
+                } else {
+                    processedImage = erode(processedImage);
+                }
+                showImageAfterProcess(processedImage);
             }
         }
     }
@@ -210,6 +215,32 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
                     if (structuralElement[0][2] == 1 && i>0 && j+1<image[i].length) imagecopy[i-1][j+1] = 1;
                     if (structuralElement[2][0] == 1 && i+1<image.length && j>0) imagecopy[i+1][j-1] = 1;
                     if (structuralElement[2][2] == 1 && i+1<image.length && j+1<image[i].length) imagecopy[i+1][j+1] = 1;
+                }
+            }
+        }
+        return imagecopy;
+    }
+    
+    int[][] erode(int[][] image){
+        int[][] imagecopy = new int[image.length][image[0].length];
+        for (int i = 0; i < imagecopy.length; i++) {
+            for (int j = 0; j < imagecopy[0].length; j++) {
+                imagecopy[i][j] = 1;
+            }
+        }
+        for (int i=0; i<image.length; i++){
+            for (int j=0; j<image[i].length; j++){
+                if (image[i][j] == 0){
+                    imagecopy[i][j] = 0;
+                    if (structuralElement[0][1] == 1 && i>0) imagecopy[i-1][j] = 0;
+                    if (structuralElement[1][0] == 1 && j>0) imagecopy[i][j-1] = 0;
+                    if (structuralElement[2][1] == 1 && i+1<image.length) imagecopy[i+1][j] = 0;
+                    if (structuralElement[1][2] == 1 && j+1<image[i].length) imagecopy[i][j+1] = 0;
+                    
+                    if (structuralElement[0][0] == 1 && i>0 && j>0) imagecopy[i-1][j-1] = 0;
+                    if (structuralElement[0][2] == 1 && i>0 && j+1<image[i].length) imagecopy[i-1][j+1] = 0;
+                    if (structuralElement[2][0] == 1 && i+1<image.length && j>0) imagecopy[i+1][j-1] = 0;
+                    if (structuralElement[2][2] == 1 && i+1<image.length && j+1<image[i].length) imagecopy[i+1][j+1] = 0;
                 }
             }
         }

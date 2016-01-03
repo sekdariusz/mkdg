@@ -146,7 +146,7 @@
             </Container>
             <Component class="javax.swing.JButton" name="loadImageButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Wczytaj obraz binarny"/>
+                <Property name="text" type="java.lang.String" value="Wczytaj dowolny obraz"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadImageButtonActionPerformed"/>

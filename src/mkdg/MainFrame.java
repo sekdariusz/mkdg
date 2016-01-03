@@ -95,7 +95,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             .addGap(0, 312, Short.MAX_VALUE)
         );
 
-        loadImageButton.setText("Wczytaj obraz binarny");
+        loadImageButton.setText("Wczytaj dowolny obraz");
         loadImageButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadImageButtonActionPerformed(evt);
