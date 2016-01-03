@@ -12,6 +12,7 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -78,6 +79,46 @@ public class ElementCanvas extends Canvas {
         for(Point p : clickedFields) {
             g.fillRect(p.x*tilesize, p.y*tilesize, tilesize, tilesize);
         }
+    }
+    
+    public int[][] getStructuralElementArray() {
+        int[][] array = new int[3][3];
+        for(int i = 0; i < array.length; i++) {
+            for(int j = 0; j<array[0].length; j++) {
+                array[i][j] = 0;
+            }
+        }
+        for(Point p: clickedFields) {
+            if(p.x == 0 && p.y == 0) {
+                array[0][0] = 1;
+            } else if (p.x == 1 && p.y == 0) {
+                array[1][0] = 1;
+            } else if (p.x == 2 && p.y == 0) {
+                array[2][0] = 1;
+            } else if (p.x == 0 && p.y == 1) {
+                array[0][1] = 1;
+            } else if (p.x == 1 && p.y == 1) {
+                array[1][1] = 1;
+            } else if (p.x == 2 && p.y == 1) {
+                array[2][1] = 1;
+            } else if (p.x == 0 && p.y == 2) {
+                array[0][2] = 1;
+            } else if (p.x == 1 && p.y == 2) {
+                array[1][2] = 1;
+            } else if (p.x == 2 && p.y == 2) {
+                array[2][2] = 1;
+            }
+        }
+        
+        //print
+        for(int i = 0; i < array.length; i++) {
+            for(int j = 0; j<array[0].length; j++) {
+                System.out.print(" "+array[i][j]);
+            }
+            System.out.println();
+        }
+        
+        return array;
     }
     
 }

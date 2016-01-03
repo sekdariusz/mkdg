@@ -9,6 +9,8 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -16,6 +18,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import mkdg.TransformationFrame.Method;
+import org.w3c.dom.css.Rect;
 
 /**
  *
@@ -24,7 +29,9 @@ import javax.swing.JFileChooser;
 public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     
     private String lastChoosenPath;
-
+    private ElementCanvas elementCanvas;
+    private BufferedImage zoomedImage;
+    
     /**
      * Creates new form MainFrame
      */
@@ -35,9 +42,9 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     
     private void initChooseElement() {
         int elementSize = ((int)((float)elementPanel.getHeight()-40)/3);
-        ElementCanvas canvas = new ElementCanvas(elementSize);
-        canvas.setBounds((elementPanel.getWidth() - (elementSize+1)*3)/2, 20, (elementSize+1)*3, (elementSize+1)*3);
-        elementPanel.add(canvas);
+        elementCanvas = new ElementCanvas(elementSize);
+        elementCanvas.setBounds((elementPanel.getWidth() - (elementSize+1)*3)/2, 20, (elementSize+1)*3, (elementSize+1)*3);
+        elementPanel.add(elementCanvas);
     }
 
     /**
@@ -75,7 +82,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        binaryImagePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Obraz binarny", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP));
+        binaryImagePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Obraz", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP));
 
         javax.swing.GroupLayout binaryImagePanelLayout = new javax.swing.GroupLayout(binaryImagePanel);
         binaryImagePanel.setLayout(binaryImagePanelLayout);
@@ -249,18 +256,45 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             saveLastPath(selectedFile);
-            showFileAsBinaryImage(selectedFile);
+            showFileAsImage(selectedFile);
         }
     }//GEN-LAST:event_loadImageButtonActionPerformed
 
     private void showErosionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showErosionButtonActionPerformed
-        // TODO add your handling code here:
+        checkIfImagesAreLoded();
+        new TransformationFrame(new FastRGB(zoomedImage), 
+                                Method.Erosion, 
+                                makeStructuralElement(),
+                                zoomedImage.getWidth(), 
+                                zoomedImage.getHeight())
+                                .setVisible(true);
     }//GEN-LAST:event_showErosionButtonActionPerformed
 
     private void showDilationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showDilationButtonActionPerformed
-        // TODO add your handling code here:
+        checkIfImagesAreLoded();
+        new TransformationFrame(new FastRGB(zoomedImage), 
+                                Method.Dilation, 
+                                makeStructuralElement(),
+                                zoomedImage.getWidth(), 
+                                zoomedImage.getHeight())
+                                .setVisible(true);
     }//GEN-LAST:event_showDilationButtonActionPerformed
 
+    private void checkIfImagesAreLoded() {
+        if(binaryImagePanel.getComponentCount() == 0) {
+            JOptionPane.showMessageDialog(null, "Wczytaj obraz w celu dalszego przetwarzania");
+            return;
+        }
+        if(zoomedImage == null) {
+            JOptionPane.showMessageDialog(null, "Zaznacz fragment wczytanego obrazu w celu uzyskania powiększenia i dalszego przetwarzania");
+            return;
+        }
+    }
+    
+    private int[][] makeStructuralElement() {
+        return elementCanvas.getStructuralElementArray();
+    }
+    
     private void saveLastPath(File selectedFile) {
         String[] dividedPath = selectedFile.getAbsolutePath().split(File.separator);
         dividedPath = Arrays.copyOf(dividedPath, dividedPath.length - 1);
@@ -275,7 +309,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         filePathEditText.setText(selectedFile.getAbsolutePath());
     }
     
-    private void showFileAsBinaryImage(File selectedFile) {
+    private void showFileAsImage(File selectedFile) {
         Image pic = null;
         try {
             pic = ImageIO.read(selectedFile);
@@ -283,6 +317,10 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
         if(pic != null) {
+            //remove prevois images
+            binaryImagePanel.removeAll();
+            zoomedImagePanel.removeAll();
+            
             int width, height;
         
             BufferedImage fittedImage = toBufferedImage(pic);
@@ -302,41 +340,6 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             binaryImagePanel.add(canvas);
         }
     }   
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MainFrame().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel binaryImagePanel;
@@ -371,8 +374,9 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         }
         
         croppedImage = createResizedCopy(croppedImage, width, height, false);
+        zoomedImage = croppedImage;
+        
         ZoomedImageCanvas canvas = new ZoomedImageCanvas(croppedImage);
-      
         canvas.setBounds((zoomedImagePanel.getWidth() - croppedImage.getWidth(null))/2, (zoomedImagePanel.getHeight() - croppedImage.getHeight(null))/2, croppedImage.getWidth(null), croppedImage.getHeight(null));
         zoomedImagePanel.add(canvas);
     }
@@ -412,4 +416,5 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     	g.dispose();
     	return scaledBI;
     }
+    
 }
