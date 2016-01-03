@@ -6,22 +6,16 @@
 package mkdg;
 
 import java.awt.AlphaComposite;
-import java.awt.Canvas;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 
 /**
  *
@@ -36,6 +30,10 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
      */
     public MainFrame() {
         initComponents();
+        initChooseElement();
+    }
+    
+    private void initChooseElement() {
         int elementSize = ((int)((float)elementPanel.getHeight()-40)/3);
         ElementCanvas canvas = new ElementCanvas(elementSize);
         canvas.setBounds((elementPanel.getWidth() - (elementSize+1)*3)/2, 20, (elementSize+1)*3, (elementSize+1)*3);
@@ -285,8 +283,22 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
         if(pic != null) {
-            SelectedImageCanvas canvas = new SelectedImageCanvas(pic, this);
-            canvas.setBounds((binaryImagePanel.getWidth() - pic.getWidth(null))/2, (binaryImagePanel.getHeight() - pic.getHeight(null))/2, pic.getWidth(null), pic.getHeight(null));
+            int width, height;
+        
+            BufferedImage fittedImage = toBufferedImage(pic);
+            float aspectRatio = (float)fittedImage.getWidth() / (float)fittedImage.getHeight();
+
+            if(fittedImage.getHeight() < fittedImage.getWidth()) {
+                width = binaryImagePanel.getWidth() - 50;
+                height = (int)((float)width / aspectRatio);
+            } else {
+                height = binaryImagePanel.getHeight() - 50;
+                width = (int)(aspectRatio * (float)height);
+            }
+            fittedImage = createResizedCopy(fittedImage, width, height, false);
+            
+            SelectedImageCanvas canvas = new SelectedImageCanvas(fittedImage, this);
+            canvas.setBounds((binaryImagePanel.getWidth() - fittedImage.getWidth(null))/2, (binaryImagePanel.getHeight() - fittedImage.getHeight(null))/2, fittedImage.getWidth(null), fittedImage.getHeight(null));
             binaryImagePanel.add(canvas);
         }
     }   
@@ -366,11 +378,11 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     }
     
     private BufferedImage cropImage(BufferedImage src, int x1, int y1, int x2, int y2) {
-      BufferedImage dest = src.getSubimage(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x1 - x2), Math.abs(y1 - y2));
-      return dest; 
-   }
+        BufferedImage dest = src.getSubimage(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x1 - x2), Math.abs(y1 - y2));
+        return dest; 
+    }
     
-    public static BufferedImage toBufferedImage(Image img) {
+    public BufferedImage toBufferedImage(Image img) {
         if (img instanceof BufferedImage) {
             return (BufferedImage) img;
         }
@@ -387,7 +399,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         return bimage;
     }
     
-    BufferedImage createResizedCopy(Image originalImage, 
+    private BufferedImage createResizedCopy(Image originalImage, 
     		int scaledWidth, int scaledHeight, 
     		boolean preserveAlpha) {
     	int imageType = preserveAlpha ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
