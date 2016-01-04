@@ -9,10 +9,13 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import static java.awt.image.ImageObserver.HEIGHT;
 import java.util.Properties;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -40,6 +43,14 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
     private TransformationCanvas afterProcessCanvas;
     private GridBagConstraints c;
     
+    private JButton dilationNextButton;    
+    private JButton erosionNextButton;
+    
+    private JButton autoDilationNextButton;    
+    private JButton autoErosionNextButton;
+    
+    private Point structuralElementPosition = new Point(0,-1);
+
     /**
      * Creates new form TransformationFrame
      */
@@ -110,7 +121,7 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
 
 
     private void showBinaryImage() {
-        originalCanvas = new TransformationCanvas(rgbModel);
+        originalCanvas = new TransformationCanvas(rgbModel, structuralElement);
         this.setBounds(0,0, width*originalCanvas.getTileSize() + 10, this.getHeight());
         this.invalidate();
         binaryImagePanel.setBounds((this.getWidth() - width*originalCanvas.getTileSize() + 10)/2, 0, width*originalCanvas.getTileSize() + 10, height*originalCanvas.getTileSize());
@@ -138,7 +149,7 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
             binaryImagePanel.remove(afterProcessCanvas);
         }
           
-        afterProcessCanvas = new TransformationCanvas(binaryModelAfterProcess);
+        afterProcessCanvas = new TransformationCanvas(binaryModelAfterProcess, structuralElement);
         binaryImagePanel.setBounds(0,0, width*originalCanvas.getTileSize() * 2 + 20, height*originalCanvas.getTileSize());
         
         originalCanvas.setBounds(5, 
@@ -205,12 +216,9 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
         Object source = e.getSource();
         if(source instanceof JSlider) {
             JSlider theJSlider = (JSlider) source;
-            //if (!theJSlider.getValueIsAdjusting()) {
-                System.out.println("Slider changed: " + theJSlider.getValue());
-                rgbModel.setThreshold(theJSlider.getValue());
-                originalCanvas.updateBinaryImage();
-                processedImage = null;
-            //}
+            rgbModel.setThreshold(theJSlider.getValue());
+            originalCanvas.updateBinaryImage();
+            processedImage = null;
         }
     }
 
@@ -218,76 +226,166 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
         if(source == dilationButton) {
-            if(processedImage == null) {
-                processedImage = dilate(rgbModel.getImageAsBinaryArray());
-            } else {
-                processedImage = dilate(processedImage);
-            }
+            
+            dilationNextButton = new JButton();
+            dilationNextButton.setBounds(20, dilationButton.getX() + dilationButton.getWidth() + 10, width*originalCanvas.getTileSize() + 10 - 40, 25);
+            dilationNextButton.setText(">");
+       
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.gridx = 1;
+            c.gridy = 2;
+            c.weightx = 0.5;
+            binaryImagePanel.add(dilationNextButton, c);
+            dilationNextButton.addActionListener(this);
+            
+            autoDilationNextButton = new JButton();
+            autoDilationNextButton.setBounds(20, dilationButton.getX() + dilationButton.getWidth() + 10, width*originalCanvas.getTileSize() + 10 - 40, 25);
+            autoDilationNextButton.setText("> AUTO");
+       
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.gridx = 2;
+            c.gridy = 2;
+            binaryImagePanel.add(autoDilationNextButton, c);
+            autoDilationNextButton.addActionListener(this);
+            
+            processedImage = rgbModel.getImageAsBinaryArray();
+            dilate(rgbModel.getImageAsBinaryArray(), processedImage, structuralElementPosition);
             showImageAfterProcess(processedImage);
-        } else {
-            if(processedImage == null) {
-                processedImage = erode(rgbModel.getImageAsBinaryArray());
-            } else {
-                processedImage = erode(processedImage);
-            }
+            
+            originalCanvas.showStructuralElement();
+            
+        } else if (source == erosionButton) {
+            
+            erosionNextButton = new JButton();
+            erosionNextButton.setBounds(20, dilationButton.getX() + dilationButton.getWidth() + 10, width*originalCanvas.getTileSize() + 10 - 40, 25);
+            erosionNextButton.setText(">");
+       
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.gridx = 1;
+            c.gridy = 3;
+            c.weightx = 0.5;
+            binaryImagePanel.add(erosionNextButton, c);
+            erosionNextButton.addActionListener(this);
+            
+            autoErosionNextButton = new JButton();
+            autoErosionNextButton.setBounds(20, dilationButton.getX() + dilationButton.getWidth() + 10, width*originalCanvas.getTileSize() + 10 - 40, 25);
+            autoErosionNextButton.setText("> AUTO");
+       
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.gridx = 2;
+            c.gridy = 3;
+            c.weightx = 0.5;
+            binaryImagePanel.add(autoErosionNextButton, c);
+            autoErosionNextButton.addActionListener(this);
+            
+            processedImage = rgbModel.getImageAsBinaryArray();
+            erode(rgbModel.getImageAsBinaryArray(), processedImage, structuralElementPosition);
             showImageAfterProcess(processedImage);
-        }       
+            
+            originalCanvas.showStructuralElement();
+        } else if (source == dilationNextButton) {
+            dilate(rgbModel.getImageAsBinaryArray(), processedImage, structuralElementPosition);
+            showImageAfterProcess(processedImage);   
+        } else if (source == erosionNextButton) {
+            erode(rgbModel.getImageAsBinaryArray(), processedImage, structuralElementPosition);
+            showImageAfterProcess(processedImage);   
+        } else if (source == autoDilationNextButton) {
+            new Timer().scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    dilate(rgbModel.getImageAsBinaryArray(), processedImage, structuralElementPosition);
+                    showImageAfterProcess(processedImage);
+                }
+            }, 1*300, 1*200); 
+        } else if (source == autoErosionNextButton) {
+            new Timer().scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    erode(rgbModel.getImageAsBinaryArray(), processedImage, structuralElementPosition);
+                    showImageAfterProcess(processedImage);  
+                }
+            }, 1*300, 1*200);     
+        }  
     }
  
-    int[][] dilate(int[][] image){
-        int[][] imagecopy = new int[image.length][image[0].length];
+    private void dilate(int[][] originalImage, int[][] processedImage ,Point p){
+
+        int i = p.x;
+        int j = p.y;
         
-        for (int i = 0; i < imagecopy.length; i++) {
-            for (int j = 0; j < imagecopy[0].length; j++) {
-                imagecopy[i][j] = image[i][j];
-            }
-        }
-        
-        for (int i=0; i<image.length; i++){
-            for (int j=0; j<image[i].length; j++){
-                if (image[i][j] == 1){
-                    if (structuralElement[1][1] == 1) imagecopy[i][j] = 1;
+        if(i >= 0 && j >= 0) {
+        //for (int i=0; i<image.length; i++){
+            //for (int j=0; j<image[i].length; j++){
+                if (originalImage[i][j] == 1){
+                    if (structuralElement[1][1] == 1) processedImage[i][j] = 1;           
                     
-                    if (structuralElement[0][1] == 1 && i>0) imagecopy[i-1][j] = 1;
-                    if (structuralElement[1][0] == 1 && j>0) imagecopy[i][j-1] = 1;
-                    if (structuralElement[2][1] == 1 && i+1<image.length) imagecopy[i+1][j] = 1;
-                    if (structuralElement[1][2] == 1 && j+1<image[i].length) imagecopy[i][j+1] = 1;
+                    if (structuralElement[0][1] == 1 && i>0) processedImage[i-1][j] = 1;
+                    if (structuralElement[1][0] == 1 && j>0) processedImage[i][j-1] = 1;
+                    if (structuralElement[2][1] == 1 && i+1<originalImage.length) processedImage[i+1][j] = 1;
+                    if (structuralElement[1][2] == 1 && j+1<originalImage[i].length) processedImage[i][j+1] = 1;
                     
-                    if (structuralElement[0][0] == 1 && i>0 && j>0) imagecopy[i-1][j-1] = 1;
-                    if (structuralElement[0][2] == 1 && i>0 && j+1<image[i].length) imagecopy[i-1][j+1] = 1;
-                    if (structuralElement[2][0] == 1 && i+1<image.length && j>0) imagecopy[i+1][j-1] = 1;
-                    if (structuralElement[2][2] == 1 && i+1<image.length && j+1<image[i].length) imagecopy[i+1][j+1] = 1;
+                    if (structuralElement[0][0] == 1 && i>0 && j>0) processedImage[i-1][j-1] = 1;
+                    if (structuralElement[0][2] == 1 && i>0 && j+1<originalImage[i].length) processedImage[i-1][j+1] = 1;
+                    if (structuralElement[2][0] == 1 && i+1<originalImage.length && j>0) processedImage[i+1][j-1] = 1;
+                    if (structuralElement[2][2] == 1 && i+1<originalImage.length && j+1<originalImage[i].length) processedImage[i+1][j+1] = 1;
                 }
+            //}
+        //}
+        }
+        
+        if (p.y + 1 < originalImage[0].length) {
+            p.y++;
+        } else {
+            if(p.x + 1 < originalImage.length) {
+                p.y = 0;
+                p.x++;
+            } else {
+                p.y = 0;
+                p.x = 0;
             }
         }
-        return imagecopy;
+        
+        originalCanvas.setStructuralElementPosition(p);
     }
     
-    int[][] erode(int[][] image){
-        int[][] imagecopy = new int[image.length][image[0].length];
-        for (int i = 0; i < imagecopy.length; i++) {
-            for (int j = 0; j < imagecopy[0].length; j++) {
-                imagecopy[i][j] = image[i][j];
-            }
-        }
-        for (int i=0; i<image.length; i++){
-            for (int j=0; j<image[i].length; j++){
-                if (image[i][j] == 0){
-                    if (structuralElement[1][1] == 1) imagecopy[i][j] = 0;
+    private void erode(int[][] originalImage, int[][] processedImage ,Point p){
+
+        int i = p.x;
+        int j = p.y;
+        
+        if(i >= 0 && j >= 0) {
+        //for (int i=0; i<image.length; i++){
+            //for (int j=0; j<image[i].length; j++){
+                if (originalImage[i][j] == 0){
+                    if (structuralElement[1][1] == 1) processedImage[i][j] = 0;           
                     
-                    if (structuralElement[0][1] == 1 && i>0) imagecopy[i-1][j] = 0;
-                    if (structuralElement[1][0] == 1 && j>0) imagecopy[i][j-1] = 0;
-                    if (structuralElement[2][1] == 1 && i+1<image.length) imagecopy[i+1][j] = 0;
-                    if (structuralElement[1][2] == 1 && j+1<image[i].length) imagecopy[i][j+1] = 0;
+                    if (structuralElement[0][1] == 1 && i>0) processedImage[i-1][j] = 0;
+                    if (structuralElement[1][0] == 1 && j>0) processedImage[i][j-1] = 0;
+                    if (structuralElement[2][1] == 1 && i+1<originalImage.length) processedImage[i+1][j] = 0;
+                    if (structuralElement[1][2] == 1 && j+1<originalImage[i].length) processedImage[i][j+1] = 0;
                     
-                    if (structuralElement[0][0] == 1 && i>0 && j>0) imagecopy[i-1][j-1] = 0;
-                    if (structuralElement[0][2] == 1 && i>0 && j+1<image[i].length) imagecopy[i-1][j+1] = 0;
-                    if (structuralElement[2][0] == 1 && i+1<image.length && j>0) imagecopy[i+1][j-1] = 0;
-                    if (structuralElement[2][2] == 1 && i+1<image.length && j+1<image[i].length) imagecopy[i+1][j+1] = 0;
+                    if (structuralElement[0][0] == 1 && i>0 && j>0) processedImage[i-1][j-1] = 1;
+                    if (structuralElement[0][2] == 1 && i>0 && j+1<originalImage[i].length) processedImage[i-1][j+1] = 0;
+                    if (structuralElement[2][0] == 1 && i+1<originalImage.length && j>0) processedImage[i+1][j-1] = 0;
+                    if (structuralElement[2][2] == 1 && i+1<originalImage.length && j+1<originalImage[i].length) processedImage[i+1][j+1] = 0;
                 }
+            //}
+        //}
+        }
+        
+        if (p.y + 1 < originalImage[0].length) {
+            p.y++;
+        } else {
+            if(p.x + 1 < originalImage.length) {
+                p.y = 0;
+                p.x++;
+            } else {
+                p.y = 0;
+                p.x = 0;
             }
         }
-        return imagecopy;
+        
+        originalCanvas.setStructuralElementPosition(p);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

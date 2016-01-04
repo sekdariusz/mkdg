@@ -5,10 +5,13 @@
  */
 package mkdg;
 
+import java.awt.AlphaComposite;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import javafx.scene.control.Slider;
 import javax.swing.JSlider;
 
@@ -22,16 +25,21 @@ public class TransformationCanvas extends Canvas {
     private int[][] binaryModel;
     private int width;
     private int height;
-    private int tilesize = 10; //default
+    private int[][] structuralElement;
+    private Point structuralElementPosition;
+    private boolean showStructuralElement = false;
+    private int tilesize = 13; //default
         
-    public TransformationCanvas(FastRGB rgbModel) {
+    public TransformationCanvas(FastRGB rgbModel, int[][] structuralElement) {
+        this.structuralElement = structuralElement;
         this.rgbModel = rgbModel;
         this.binaryModel = rgbModel.getImageAsBinaryArray();
         this.width = binaryModel.length;
         this.height = binaryModel[0].length;
     }
     
-     public TransformationCanvas(int[][] binaryModel) {
+     public TransformationCanvas(int[][] binaryModel, int[][] structuralElement) {
+        this.structuralElement = structuralElement;
         this.binaryModel = binaryModel;
         this.width = binaryModel.length;
         this.height = binaryModel[0].length;
@@ -53,6 +61,33 @@ public class TransformationCanvas extends Canvas {
             }
         }
         
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.80f));
+        g2.setColor(Color.yellow);
+
+        if(showStructuralElement) {
+            for(int x = 0; x < structuralElement.length; x++) {
+                for (int y = 0; y < structuralElement.length; y++) {
+                    if(structuralElement[x][y] == 1) {
+                        int dx = 0;
+                        if(x < 1) {
+                            dx = -1;
+                        } else if (x > 1) {
+                            dx = 1;
+                        }
+                        int dy = 0;
+                        if(y < 1) {
+                            dy = -1;
+                        } else if (y > 1) {
+                            dy = 1;
+                        }
+                        g.fillRect((structuralElementPosition.x + dx)*tilesize, (structuralElementPosition.y + dy)*tilesize, tilesize, tilesize);
+                    }
+                }
+            }
+        }
+        
     }
     
     public void setTileSize(int newSize) {
@@ -67,28 +102,21 @@ public class TransformationCanvas extends Canvas {
     public void updateBinaryImage() {
         this.binaryModel = rgbModel.getImageAsBinaryArray();
         this.repaint();
-        
-        new java.util.Timer().schedule( 
-            new java.util.TimerTask() {
-                @Override
-                public void run() {
-                    TransformationCanvas.this.repaint();
-                }
-            }, 
-        100);
     }
     
-     public void updateBinaryImage(int[][] newImage) {
+    public void updateBinaryImage(int[][] newImage) {
         this.binaryModel = newImage;
+        this.repaint();    
+    }
+     
+    public void showStructuralElement() {
+        structuralElementPosition = new Point(0,0);
+        showStructuralElement = true;
         this.repaint();
-        
-         new java.util.Timer().schedule( 
-            new java.util.TimerTask() {
-                @Override
-                public void run() {
-                    TransformationCanvas.this.repaint();
-                }
-            }, 
-        100);
+    }
+    
+    public void setStructuralElementPosition(Point newPosition) {
+        structuralElementPosition = newPosition;
+        this.repaint();
     }
 }
