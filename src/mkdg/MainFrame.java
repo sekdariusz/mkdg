@@ -88,6 +88,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
 
         jPanel1 = new javax.swing.JPanel();
         tabbedPane = new javax.swing.JTabbedPane();
+        programPanel = new javax.swing.JPanel();
         teachPanel = new javax.swing.JPanel();
         binaryImagePanel = new javax.swing.JPanel();
         zoomedImagePanel = new javax.swing.JPanel();
@@ -95,7 +96,6 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         processButton = new javax.swing.JButton();
         filePathEditText = new javax.swing.JTextField();
         loadImageButton = new javax.swing.JButton();
-        programPanel = new javax.swing.JPanel();
         gamePanel = new javax.swing.JPanel();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -110,6 +110,19 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        javax.swing.GroupLayout programPanelLayout = new javax.swing.GroupLayout(programPanel);
+        programPanel.setLayout(programPanelLayout);
+        programPanelLayout.setHorizontalGroup(
+            programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 770, Short.MAX_VALUE)
+        );
+        programPanelLayout.setVerticalGroup(
+            programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 495, Short.MAX_VALUE)
+        );
+
+        tabbedPane.addTab("Nauka", programPanel);
 
         binaryImagePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Obraz", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP));
 
@@ -205,20 +218,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
                 .addGap(0, 0, 0))
         );
 
-        tabbedPane.addTab("Nauka", teachPanel);
-
-        javax.swing.GroupLayout programPanelLayout = new javax.swing.GroupLayout(programPanel);
-        programPanel.setLayout(programPanelLayout);
-        programPanelLayout.setHorizontalGroup(
-            programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 770, Short.MAX_VALUE)
-        );
-        programPanelLayout.setVerticalGroup(
-            programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 495, Short.MAX_VALUE)
-        );
-
-        tabbedPane.addTab("Program", programPanel);
+        tabbedPane.addTab("Program", teachPanel);
 
         javax.swing.GroupLayout gamePanelLayout = new javax.swing.GroupLayout(gamePanel);
         gamePanel.setLayout(gamePanelLayout);
