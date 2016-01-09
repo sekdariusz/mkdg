@@ -12,7 +12,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
-import javafx.scene.control.Slider;
+//import javafx.scene.control.Slider;
 import javax.swing.JSlider;
 
 /**

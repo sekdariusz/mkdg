@@ -33,7 +33,7 @@ public class SelectedImageCanvas extends Canvas {
     private Point startDrag, endDrag;
     private ZoomCallback zoomCallback;
     
-    SelectedImageCanvas(Image image, ZoomCallback zoomCallback) {
+    SelectedImageCanvas(final Image image, final ZoomCallback zoomCallback) {
         this.image = image;
         this.zoomCallback = zoomCallback;
         this.addMouseListener(new MouseAdapter() {

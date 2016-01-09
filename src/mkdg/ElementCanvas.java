@@ -13,6 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  *
@@ -21,19 +22,23 @@ import java.util.Arrays;
 public class ElementCanvas extends Canvas {
     
     private int tilesize;
+    private int panel;
     
     private int x1;
     private int y1;
     private int x2;
     private int y2;
+    private boolean klikniecie = false;
     
     private ArrayList<Point> clickedFields = new ArrayList();
     
-    public ElementCanvas (int tilesize) {
+    public ElementCanvas (final int tilesize, int panel) {
         this.tilesize = tilesize;
+        this.panel = panel;
         this.addMouseListener(new MouseAdapter() {
             
             public void mouseClicked(MouseEvent e){
+                klikniecie = true; 
                 int x = e.getX();
                 int y = e.getY();
                 int ccol;
@@ -78,6 +83,19 @@ public class ElementCanvas extends Canvas {
         g.setColor(Color.black);
         for(Point p : clickedFields) {
             g.fillRect(p.x*tilesize, p.y*tilesize, tilesize, tilesize);
+        }
+        
+        if(panel==2 & klikniecie== false){
+          Point p1 = new Point(1, 1);
+          g.setColor(Color.black);
+          g.fillRect(p1.x*tilesize, p1.x*tilesize, tilesize, tilesize);
+          Point p2 = new Point(0, 0);
+          g.setColor(Color.black);
+          g.fillRect(p2.x*tilesize, p2.x*tilesize, tilesize, tilesize);
+          Point p3 = new Point(2, 0);
+          g.setColor(Color.black);
+          g.fillRect(p3.x*tilesize, p3.x*tilesize, tilesize, tilesize);
+            
         }
     }
     
