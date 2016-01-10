@@ -67,19 +67,28 @@ public class PrzedNauka extends Canvas {
          if(panel==2 & klikniecie== false){
           Point p1 = new Point(0, 0);
           g.setColor(Color.black);
-          g.fillRect(p1.x*tilesize, p1.x*tilesize, tilesize, tilesize);
-          Point p2 = new Point(1, 1);
+          g.fillRect(p1.x*tilesize, p1.y*tilesize, tilesize, tilesize);
+          Point p2 = new Point(0, 1);
           g.setColor(Color.black);
-          g.fillRect(p2.x*tilesize, p2.x*tilesize, tilesize, tilesize);
+          g.fillRect(p2.x*tilesize, p2.y*tilesize, tilesize, tilesize);
           Point p3 = new Point(2, 2);
           g.setColor(Color.black);
-          g.fillRect(p3.x*tilesize, p3.x*tilesize, tilesize, tilesize);
-          Point p4 = new Point(3, 3);
+          g.fillRect(p3.x*tilesize, p3.y*tilesize, tilesize, tilesize);
+          Point p4 = new Point(1, 3);
           g.setColor(Color.black);
-          g.fillRect(p4.x*tilesize, p4.x*tilesize, tilesize, tilesize);
+          g.fillRect(p4.x*tilesize, p4.y*tilesize, tilesize, tilesize);
           Point p5 = new Point(4, 4);
           g.setColor(Color.black);
-          g.fillRect(p5.x*tilesize, p5.x*tilesize, tilesize, tilesize);
+          g.fillRect(p5.x*tilesize, p5.y*tilesize, tilesize, tilesize);
+          Point p6 = new Point(1, 1);
+          g.setColor(Color.black);
+          g.fillRect(p6.x*tilesize, p6.y*tilesize, tilesize, tilesize);
+          Point p7 = new Point(1, 2);
+          g.setColor(Color.black);
+          g.fillRect(p7.x*tilesize, p7.y*tilesize, tilesize, tilesize);
+          Point p8 = new Point(3, 4);
+          g.setColor(Color.black);
+          g.fillRect(p8.x*tilesize, p8.y*tilesize, tilesize, tilesize);
                       
         }
         //Draw Vertical Lines

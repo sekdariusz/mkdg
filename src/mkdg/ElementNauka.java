@@ -87,15 +87,12 @@ public class ElementNauka extends Canvas {
         }
         
         if(klikniecie== false){
-          Point p1 = new Point(0, 0);
-          g.setColor(Color.black);
-          g.fillRect(p1.x*tilesize, p1.x*tilesize, tilesize, tilesize);
           Point p2 = new Point(1, 1);
           g.setColor(Color.red);
-          g.fillRect(p2.x*tilesize, p2.x*tilesize, tilesize, tilesize);
-          Point p3 = new Point(2, 2);
+          g.fillRect(p2.x*tilesize, p2.y*tilesize, tilesize, tilesize);
+          Point p3 = new Point(2, 1);
           g.setColor(Color.black);
-          g.fillRect(p3.x*tilesize, p3.x*tilesize, tilesize, tilesize);
+          g.fillRect(p3.x*tilesize, p3.y*tilesize, tilesize, tilesize);
             
         }
     }

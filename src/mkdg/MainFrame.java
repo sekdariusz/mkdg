@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -26,6 +27,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 
 
 /**
@@ -126,7 +128,8 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         przed = new javax.swing.JPanel();
         po = new javax.swing.JPanel();
         start = new javax.swing.JButton();
-        komentarzLabel = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        komentarzText = new javax.swing.JEditorPane();
         teachPanel = new javax.swing.JPanel();
         binaryImagePanel = new javax.swing.JPanel();
         zoomedImagePanel = new javax.swing.JPanel();
@@ -267,42 +270,44 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             }
         });
 
-        komentarzLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        komentarzLabel.setText("Komentarz");
-        komentarzLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        jScrollPane2.setViewportView(komentarzText);
 
         javax.swing.GroupLayout programPanelLayout = new javax.swing.GroupLayout(programPanel);
         programPanel.setLayout(programPanelLayout);
         programPanelLayout.setHorizontalGroup(
             programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(programPanelLayout.createSequentialGroup()
-                .addGroup(programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(programPanelLayout.createSequentialGroup()
                         .addGap(24, 24, 24)
-                        .addGroup(programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(programPanelLayout.createSequentialGroup()
-                                .addGroup(programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(radioErozja)
-                                    .addComponent(radioDylatacja))
-                                .addGap(18, 18, 18)
-                                .addGroup(programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(InfoDylatacja)
-                                    .addComponent(InfoErozja))
-                                .addGap(66, 66, 66)
-                                .addComponent(elementPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(26, 26, 26))
-                            .addGroup(programPanelLayout.createSequentialGroup()
-                                .addComponent(przed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(38, 38, 38)
-                                .addComponent(komentarzLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(36, 36, 36)))
                         .addGroup(programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(po, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(InfoElement)))
+                            .addComponent(radioErozja)
+                            .addComponent(radioDylatacja))
+                        .addGap(18, 18, 18)
+                        .addGroup(programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(InfoDylatacja)
+                            .addComponent(InfoErozja))
+                        .addGap(66, 66, 66)
+                        .addComponent(elementPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(66, 66, 66))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, programPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(przed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(programPanelLayout.createSequentialGroup()
-                        .addGap(343, 343, 343)
-                        .addComponent(start)))
-                .addContainerGap(64, Short.MAX_VALUE))
+                        .addGap(0, 0, 0)
+                        .addComponent(InfoElement)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, programPanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                        .addComponent(po, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
+            .addGroup(programPanelLayout.createSequentialGroup()
+                .addGap(343, 343, 343)
+                .addComponent(start)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         programPanelLayout.setVerticalGroup(
             programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -324,13 +329,13 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
                         .addGap(20, 20, 20)
                         .addComponent(InfoElement)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
-                .addGroup(programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(przed, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(po, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, programPanelLayout.createSequentialGroup()
+                .addGroup(programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(programPanelLayout.createSequentialGroup()
                         .addComponent(start)
-                        .addGap(48, 48, 48)
-                        .addComponent(komentarzLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(po, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(przed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(34, 34, 34))
         );
 
@@ -535,14 +540,35 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     private void startActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startActionPerformed
         // TODO add your handling code here:
         // są problemy ze sprawdzeniem, czy rysunek jest narysowany, więc odpuszczam sprawdzanie
-        if(radioDylatacja.isSelected()){
-            komentarzLabel.setText("Dylatacja. ....");
+       if(radioErozja.isSelected()){
+            komentarzText.setContentType("text/html");
+            komentarzText.setText("<b>EROZJA</b><br>"
+                    + "         <b>1.</b> Wybierany jest punkt A z obrazu PRZED. <br>"
+                    + "         <b>2.</b> Na punkt A nakładamy element strukturalny, tak, aby <font color = red>środek </font> pokrywał punkt A.<br>"
+                    + "         <b>3.</b> Porównujemy, czy punkt A jest tak zamalowany/niezamalowany jak <font color = red>środek </font> elementu strukturalnego.<br>"
+                    + "         <b>4.</b> Jeśli TAK: przechodzimy do punktu 5, jeśli NIE: przechodzimy do punktu 1.<br>"
+                    + "         <b>5.</b> Porównujemy, czy otoczenie punktu A jest tak zamalowane jest otoczenie <font color = red>środka </font> elementu strukturalnego.<br>"
+                    + "         <b>6a.</b> Jeśli TAK: na obrazie PO w punkcie A' zamalowywany jest prostokąt<br>"
+                    + "         <b>6b.</b> Jeśli NIE: na obrazie PO w punkcie A' pozostaje pusty prostokąt<br>"
+                    + "         <b>7.</b> Wracamy do punktu 1.<br>"
+            );
         }
-        else if(radioErozja.isSelected()){
-            komentarzLabel.setText("Erozja. ....");
+        else if(radioDylatacja.isSelected()){
+             komentarzText.setContentType("text/html");
+            komentarzText.setText("<b>DYLATACJA</b><br>"
+                    + "         <b>1.</b> Wybierany jest punkt A z obrazu PRZED. <br>"
+                    + "         <b>2.</b> Na punkt A nakładamy element strukturalny, tak, aby <font color = red>środek </font> pokrywał punkt A.<br>"
+                    + "         <b>3.</b> Porównujemy, czy punkt A jest tak zamalowany/niezamalowany jak <font color = red>środek </font> elementu strukturalnego.<br>"
+                    + "         <b>4a.</b> Jeśli TAK: na obrazie PO w punkcie A' zamalowywane są prostokąty, tak jak w ułożeniu elementu strukturalnego. Inaczej mówiąc, w punkcie A' stawiamy pieczątkę w kształcie elementu strukturalnego.<br>"
+                    + "         <b>4b.</b> Jeśli NIE: na obrazie PO w punkcie A' pozostaje pusty prostokąt<br>"
+                    + "         <b>5.</b> Wracamy do punktu 1.<br>"
+            );
         }
+       
+       
     }//GEN-LAST:event_startActionPerformed
 
+    
       
     private void checkIfImagesAreLoded() {
         if(binaryImagePanel.getComponentCount() == 0) {
@@ -632,7 +658,8 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     private javax.swing.JTextField filePathEditText;
     private javax.swing.JPanel gamePanel;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JLabel komentarzLabel;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JEditorPane komentarzText;
     private javax.swing.JButton loadImageButton;
     private javax.swing.JPanel po;
     private javax.swing.JButton processButton;
