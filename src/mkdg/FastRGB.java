@@ -19,6 +19,7 @@ public class FastRGB {
     private int height;
     private int[] pixels;
     private int threshold = 20;
+    private boolean thresholdChanged = false;
     
     private int[][] binaryPixels;
 
@@ -36,7 +37,8 @@ public class FastRGB {
     
     public int[][] getImageAsBinaryArray() {
         
-        //if(binaryPixels == null) {
+        if(binaryPixels == null || thresholdChanged) {
+            thresholdChanged = false;
             binaryPixels = new int[width][height];
             int decisionLimit = (int)(-16777216.0/(100.0/(float)threshold));
         
@@ -49,13 +51,14 @@ public class FastRGB {
                     }
                 }
             }
-        //}
+        }
         
-        return binaryPixels; 
+        return binaryPixels.clone(); 
     }
     
     public void setThreshold(int value) {
         this.threshold = value;
+        thresholdChanged = true;
     }
     
 }

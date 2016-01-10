@@ -118,7 +118,7 @@ public class TransformationCanvas extends Canvas {
     }
     
     public void hideStructuralElement() {
-        showStructuralElement = true;
+        showStructuralElement = false;
         this.repaint();
     }
     
