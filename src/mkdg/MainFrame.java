@@ -36,6 +36,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     
     private String lastChoosenPath;
     private ElementCanvas elementCanvas;
+    private ElementNauka elementNauka;
     private PrzedNauka przedNauka;
     private BufferedImage zoomedImage;
     private boolean loadPreviousConfiguration = false;
@@ -76,7 +77,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     
     private void initChooseElement() {
         int elementSize = ((int)((float)elementPanel.getHeight()-40)/3);
-        elementCanvas = new ElementCanvas(elementSize, 1);
+        elementCanvas = new ElementCanvas(elementSize);
         elementCanvas.setBounds((elementPanel.getWidth() - (elementSize+1)*3)/2, 20, (elementSize+1)*3, (elementSize+1)*3);
         elementPanel.add(elementCanvas);
     }
@@ -86,9 +87,9 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     
     private void ElementPan2() {
         int elSize = ((int)((float)elementPanel2.getHeight()-40)/3);
-        elementCanvas = new ElementCanvas(elSize, 2);
-        elementCanvas.setBounds((elementPanel2.getWidth() - (elSize+1)*3)/2, 20, (elSize+1)*3, (elSize+1)*3);
-        elementPanel2.add(elementCanvas);
+        elementNauka = new ElementNauka(elSize);
+        elementNauka.setBounds((elementPanel2.getWidth() - (elSize+1)*3)/2, 20, (elSize+1)*3, (elSize+1)*3);
+        elementPanel2.add(elementNauka);
         
         
     }

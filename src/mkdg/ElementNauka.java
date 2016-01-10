@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mkdg;
 
 import java.awt.Canvas;
@@ -19,11 +14,10 @@ import java.util.Iterator;
  *
  * @author daroslav
  */
-public class ElementCanvas extends Canvas {
+public class ElementNauka extends Canvas {
     
     private int tilesize;
-    private int panel;
-    
+        
     private int x1;
     private int y1;
     private int x2;
@@ -32,7 +26,7 @@ public class ElementCanvas extends Canvas {
     
     private ArrayList<Point> clickedFields = new ArrayList();
     
-    public ElementCanvas (final int tilesize) {
+    public ElementNauka (final int tilesize) {
         this.tilesize = tilesize;
         this.addMouseListener(new MouseAdapter() {
             
@@ -92,10 +86,21 @@ public class ElementCanvas extends Canvas {
             
         }
         
-       
+        if(klikniecie== false){
+          Point p1 = new Point(0, 0);
+          g.setColor(Color.black);
+          g.fillRect(p1.x*tilesize, p1.x*tilesize, tilesize, tilesize);
+          Point p2 = new Point(1, 1);
+          g.setColor(Color.red);
+          g.fillRect(p2.x*tilesize, p2.x*tilesize, tilesize, tilesize);
+          Point p3 = new Point(2, 2);
+          g.setColor(Color.black);
+          g.fillRect(p3.x*tilesize, p3.x*tilesize, tilesize, tilesize);
+            
+        }
     }
     
-    public int[][] getStructuralElementArray() {
+    public int[][] getElementNaukaArray() {
         int[][] array = new int[3][3];
         for(int i = 0; i < array.length; i++) {
             for(int j = 0; j<array[0].length; j++) {
