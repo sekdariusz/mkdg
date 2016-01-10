@@ -22,8 +22,7 @@ import java.util.Iterator;
 public class PrzedNauka extends Canvas {
     
     private int tilesize;
-    private int panel;
-    
+   
     private int x1;
     private int y1;
     private int x2;
@@ -32,9 +31,8 @@ public class PrzedNauka extends Canvas {
     
     private ArrayList<Point> clickedFields = new ArrayList();
     
-    public PrzedNauka (final int tilesize, int panel) {
+    public PrzedNauka (final int tilesize) {
         this.tilesize = tilesize;
-        this.panel = panel;
         this.addMouseListener(new MouseAdapter() {
             
             public void mouseClicked(MouseEvent e){
@@ -64,7 +62,7 @@ public class PrzedNauka extends Canvas {
     @Override
     public void paint(Graphics g) {
         
-         if(panel==2 & klikniecie== false){
+         if(klikniecie== false){
           Point p1 = new Point(0, 0);
           g.setColor(Color.black);
           g.fillRect(p1.x*tilesize, p1.y*tilesize, tilesize, tilesize);
@@ -91,26 +89,7 @@ public class PrzedNauka extends Canvas {
           g.fillRect(p8.x*tilesize, p8.y*tilesize, tilesize, tilesize);
                       
         }
-        //Draw Vertical Lines
-       /* g.setColor(Color.black);
-        for(int i = 0; i < 3 + 1; i++) {
-            x1 = tilesize * i;
-            y1 = 0;
-            x2 = tilesize * i;
-            y2 = tilesize * 3;
-            g.drawLine(x1, y1, x2, y2);
-        }
-        //Draw Horizontal Lines
-        g.setColor(Color.black);
-        for(int i = 0; i < 3 + 1; i++) {
-            x1 = 0;
-            y1 = tilesize * i;
-            x2 = tilesize * 3;
-            y2 = tilesize * i;
-            g.drawLine(x1, y1, x2, y2);
-        }
-        */
-        
+      
         g.setColor(Color.black);
         for(Point p : clickedFields) {
             g.fillRect(p.x*tilesize, p.y*tilesize, tilesize, tilesize);
@@ -127,59 +106,59 @@ public class PrzedNauka extends Canvas {
             }
         }
         for(Point p: clickedFields) {
-              if(p.x == 0 && p.y == 0) {
+              if(p.y == 0 && p.x == 0) {
                 array[0][0] = 1;
-            } else if (p.x == 1 && p.y == 0) {
+            } else if (p.y == 1 && p.x == 0) {
                 array[1][0] = 1;
-            } else if (p.x == 2 && p.y == 0) {
+            } else if (p.y == 2 && p.x == 0) {
                 array[2][0] = 1;
-            } else if (p.x == 3 && p.y == 0) {
+            } else if (p.y == 3 && p.x == 0) {
                 array[3][0] = 1;
-            } else if (p.x == 4 && p.y == 0) {
+            } else if (p.y == 4 && p.x == 0) {
                 array[4][0] = 1;
             } 
-              else if (p.x == 0 && p.y == 1) {
+              else if (p.y == 0 && p.x == 1) {
                 array[0][1] = 1;
-            } else if (p.x == 1 && p.y == 1) {
+            } else if (p.y == 1 && p.x == 1) {
                 array[1][1] = 1;
-            } else if (p.x == 2 && p.y == 1) {
+            } else if (p.y == 2 && p.x == 1) {
                 array[2][1] = 1;
-            } else if (p.x == 3 && p.y == 1) {
+            } else if (p.y == 3 && p.x == 1) {
                 array[3][1] = 1;
-            } else if (p.x == 4 && p.y == 1) {
+            } else if (p.y == 4 && p.x == 1) {
                 array[4][1] = 1;
             } 
-              else if (p.x == 0 && p.y == 2) {
+              else if (p.y == 0 && p.x == 2) {
                 array[0][2] = 1;
-            } else if (p.x == 1 && p.y == 2) {
+            } else if (p.y == 1 && p.x == 2) {
                 array[1][2] = 1;
-            } else if (p.x == 2 && p.y == 2) {
+            } else if (p.y == 2 && p.x == 2) {
                 array[2][2] = 1;
-            } else if (p.x == 3 && p.y == 2) {
+            } else if (p.y == 3 && p.x == 2) {
                 array[3][2] = 1;
-            } else if (p.x == 4 && p.y == 2) {
+            } else if (p.y == 4 && p.x == 2) {
                 array[4][2] = 1;
             }
-             else if (p.x == 0 && p.y == 3) {
+             else if (p.y == 0 && p.x == 3) {
                 array[0][3] = 1;
-            } else if (p.x == 1 && p.y == 3) {
+            } else if (p.y == 1 && p.x == 3) {
                 array[1][3] = 1;
-            } else if (p.x == 2 && p.y == 3) {
+            } else if (p.y == 2 && p.x == 3) {
                 array[2][3] = 1;
-            } else if (p.x == 3 && p.y == 3) {
+            } else if (p.y == 3 && p.x == 3) {
                 array[3][3] = 1;
-            } else if (p.x == 4 && p.y == 3) {
+            } else if (p.y == 4 && p.x == 3) {
                 array[4][3] = 1;
             }
-              else if (p.x == 0 && p.y == 4) {
+              else if (p.y == 0 && p.x == 4) {
                 array[0][4] = 1;
-            } else if (p.x == 1 && p.y == 4) {
+            } else if (p.y == 1 && p.x == 4) {
                 array[1][4] = 1;
-            } else if (p.x == 2 && p.y == 4) {
+            } else if (p.y == 2 && p.x == 4) {
                 array[2][4] = 1;
-            } else if (p.x == 3 && p.y == 4) {
+            } else if (p.y == 3 && p.x == 4) {
                 array[3][4] = 1;
-            } else if (p.x == 4 && p.y == 4) {
+            } else if (p.y == 4 && p.x == 4) {
                 array[4][4] = 1;
             }
         }

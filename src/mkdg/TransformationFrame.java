@@ -29,6 +29,8 @@ import org.w3c.dom.css.Rect;
  */
 public class TransformationFrame extends javax.swing.JFrame implements ChangeListener, ActionListener {
 
+    private final int DILATION_COLOR = 2;
+    private final int EROSION_COLOR = 3;
     
     private FastRGB rgbModel;
     private int[][] structuralElement;
@@ -53,6 +55,9 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
     
     private Timer autoDilationTimer;
     private Timer autoErosionTimer;
+    
+    private boolean stopDilateClicked = false;
+    private boolean stopErodeClicked = false;
 
     /**
      * Creates new form TransformationFrame
@@ -283,6 +288,13 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
             showImageAfterProcess(processedImage);
             
         } else if (source == dilationWholeButton) {
+            
+            if(autoDilationTimer != null) {
+                stopDilateClicked = false;
+                autoDilationTimer.cancel();
+                autoDilationTimer = null;
+            }
+            
             structuralElementPosition = new Point(0,-1);
             originalCanvas.setStructuralElementPosition(structuralElementPosition);
             originalCanvas.hideStructuralElement();    
@@ -302,6 +314,13 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
             
             pack();
         } else if (source == erosionWholeButton) {
+            
+            if(autoErosionTimer != null) {
+                stopErodeClicked = false;
+                autoErosionTimer.cancel();
+                autoErosionTimer = null;
+            }
+            
             structuralElementPosition = new Point(0,-1);
             originalCanvas.setStructuralElementPosition(structuralElementPosition);
             originalCanvas.hideStructuralElement();
@@ -321,7 +340,7 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
             
             pack();
         } else if (source == autoDilationNextButton) {
-            if(autoDilationTimer == null) {
+            if(autoDilationTimer == null && !stopDilateClicked) {
                 dilationWholeButton.setEnabled(false);
                 originalCanvas.showStructuralElement();
                 
@@ -344,14 +363,26 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
                         showImageAfterProcess(processedImage);
                     }
                 }, 1*300, 1*200);
-            } else {
+            } else if(!stopDilateClicked){
+                stopDilateClicked = true;
                 dilationWholeButton.setEnabled(true);
                 autoDilationTimer.cancel();
                 autoDilationTimer = null;
                 autoDilationNextButton.setText("Dalej");
+            } else {
+                stopDilateClicked = false;
+                autoDilationNextButton.setText("STOP");
+                autoDilationTimer = new Timer();
+                autoDilationTimer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        dilate(rgbModel.getImageAsBinaryArray(), processedImage, structuralElementPosition);
+                        showImageAfterProcess(processedImage);
+                    }
+                }, 1*300, 1*200);
             }
         } else if (source == autoErosionNextButton) {
-            if(autoErosionTimer == null) {
+            if(autoErosionTimer == null && !stopErodeClicked) {
                 autoErosionNextButton.setText("STOP");
                 erosionWholeButton.setEnabled(false);
                 originalCanvas.showStructuralElement();
@@ -374,11 +405,23 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
                         showImageAfterProcess(processedImage);  
                     }
                 }, 1*300, 1*200);  
-            } else {
+            } else if (!stopErodeClicked) {
+                stopErodeClicked = true;
                 erosionWholeButton.setEnabled(true);
                 autoErosionTimer.cancel();
                 autoErosionTimer = null;
                 autoErosionNextButton.setText("Dalej");
+            } else {
+                stopErodeClicked = false;
+                autoErosionNextButton.setText("STOP");
+                autoErosionTimer = new Timer();
+                autoErosionTimer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        erode(rgbModel.getImageAsBinaryArray(), processedImage, structuralElementPosition);
+                        showImageAfterProcess(processedImage);
+                    }
+                }, 1*300, 1*200);
             }
         }  
     }
@@ -391,18 +434,16 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
         if(i >= 0 && j >= 0) {
         //for (int i=0; i<image.length; i++){
             //for (int j=0; j<image[i].length; j++){
-                if (originalImage[i][j] == 1){
-                    if (structuralElement[1][1] == 1) processedImage[i][j] = 1;           
+                if (originalImage[i][j] == 0){
+                    if (structuralElement[1][0] == 1 && i>0 && originalImage[i-1][j] == 1) processedImage[i][j] = DILATION_COLOR;
+                    if (structuralElement[0][1] == 1 && j>0 && originalImage[i][j-1] == 1) processedImage[i][j] = DILATION_COLOR;
+                    if (structuralElement[1][2] == 1 && i+1<originalImage.length && originalImage[i+1][j] == 1) processedImage[i][j] = DILATION_COLOR;
+                    if (structuralElement[2][1] == 1 && j+1<originalImage[i].length && originalImage[i][j+1] == 1) processedImage[i][j] = DILATION_COLOR;
                     
-                    if (structuralElement[1][0] == 1 && i>0) processedImage[i-1][j] = 1;
-                    if (structuralElement[0][1] == 1 && j>0) processedImage[i][j-1] = 1;
-                    if (structuralElement[1][2] == 1 && i+1<originalImage.length) processedImage[i+1][j] = 1;
-                    if (structuralElement[2][1] == 1 && j+1<originalImage[i].length) processedImage[i][j+1] = 1;
-                    
-                    if (structuralElement[0][0] == 1 && i>0 && j>0) processedImage[i-1][j-1] = 1;
-                    if (structuralElement[2][0] == 1 && i>0 && j+1<originalImage[i].length) processedImage[i-1][j+1] = 1;
-                    if (structuralElement[0][2] == 1 && i+1<originalImage.length && j>0) processedImage[i+1][j-1] = 1;
-                    if (structuralElement[2][2] == 1 && i+1<originalImage.length && j+1<originalImage[i].length) processedImage[i+1][j+1] = 1;
+                    if (structuralElement[0][0] == 1 && i>0 && j>0 && originalImage[i-1][j-1] == 1) processedImage[i][j] = DILATION_COLOR;
+                    if (structuralElement[2][0] == 1 && i>0 && j+1<originalImage[i].length && originalImage[i-1][j+1] == 1) processedImage[i][j] = DILATION_COLOR;
+                    if (structuralElement[0][2] == 1 && i+1<originalImage.length && j>0 && originalImage[i+1][j-1] == 1) processedImage[i][j] = DILATION_COLOR;
+                    if (structuralElement[2][2] == 1 && i+1<originalImage.length && j+1<originalImage[i].length && originalImage[i+1][j+1] == 1) processedImage[i][j] = DILATION_COLOR;
                 }
             //}
         //}
@@ -427,18 +468,16 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
         
         for (int i=0; i<originalImage.length; i++){
             for (int j=0; j<originalImage[i].length; j++){
-                if (originalImage[i][j] == 1){
-                    if (structuralElement[1][1] == 1) processedImage[i][j] = 1;           
+                if (originalImage[i][j] == 0){
+                    if (structuralElement[1][0] == 1 && i>0 && originalImage[i-1][j] == 1) processedImage[i][j] = DILATION_COLOR;
+                    if (structuralElement[0][1] == 1 && j>0 && originalImage[i][j-1] == 1) processedImage[i][j] = DILATION_COLOR;
+                    if (structuralElement[1][2] == 1 && i+1<originalImage.length && originalImage[i+1][j] == 1) processedImage[i][j] = DILATION_COLOR;
+                    if (structuralElement[2][1] == 1 && j+1<originalImage[i].length && originalImage[i][j+1] == 1) processedImage[i][j] = DILATION_COLOR;
                     
-                    if (structuralElement[1][0] == 1 && i>0) processedImage[i-1][j] = 1;
-                    if (structuralElement[0][1] == 1 && j>0) processedImage[i][j-1] = 1;
-                    if (structuralElement[1][2] == 1 && i+1<originalImage.length) processedImage[i+1][j] = 1;
-                    if (structuralElement[2][1] == 1 && j+1<originalImage[i].length) processedImage[i][j+1] = 1;
-                    
-                    if (structuralElement[0][0] == 1 && i>0 && j>0) processedImage[i-1][j-1] = 1;
-                    if (structuralElement[2][0] == 1 && i>0 && j+1<originalImage[i].length) processedImage[i-1][j+1] = 1;
-                    if (structuralElement[0][2] == 1 && i+1<originalImage.length && j>0) processedImage[i+1][j-1] = 1;
-                    if (structuralElement[2][2] == 1 && i+1<originalImage.length && j+1<originalImage[i].length) processedImage[i+1][j+1] = 1;
+                    if (structuralElement[0][0] == 1 && i>0 && j>0 && originalImage[i-1][j-1] == 1) processedImage[i][j] = DILATION_COLOR;
+                    if (structuralElement[2][0] == 1 && i>0 && j+1<originalImage[i].length && originalImage[i-1][j+1] == 1) processedImage[i][j] = DILATION_COLOR;
+                    if (structuralElement[0][2] == 1 && i+1<originalImage.length && j>0 && originalImage[i+1][j-1] == 1) processedImage[i][j] = DILATION_COLOR;
+                    if (structuralElement[2][2] == 1 && i+1<originalImage.length && j+1<originalImage[i].length && originalImage[i+1][j+1] == 1) processedImage[i][j] = DILATION_COLOR;
                 }
             }
         }
@@ -454,18 +493,16 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
         if(i >= 0 && j >= 0) {
         //for (int i=0; i<image.length; i++){
             //for (int j=0; j<image[i].length; j++){
-                if (originalImage[i][j] == 0){
-                    if (structuralElement[1][1] == 1) processedImage[i][j] = 0;           
+                if (originalImage[i][j] == 1){                    
+                    if (structuralElement[1][0] == 1 && i>0 && originalImage[i-1][j] == 0) processedImage[i][j] = EROSION_COLOR;
+                    if (structuralElement[0][1] == 1 && j>0 && originalImage[i][j-1] == 0) processedImage[i][j] = EROSION_COLOR;
+                    if (structuralElement[1][2] == 1 && i+1<originalImage.length && originalImage[i+1][j] == 0) processedImage[i][j] = EROSION_COLOR;
+                    if (structuralElement[2][1] == 1 && j+1<originalImage[i].length && originalImage[i][j+1] == 0) processedImage[i][j] = EROSION_COLOR;
                     
-                    if (structuralElement[1][0] == 1 && i>0) processedImage[i-1][j] = 0;
-                    if (structuralElement[0][1] == 1 && j>0) processedImage[i][j-1] = 0;
-                    if (structuralElement[1][2] == 1 && i+1<originalImage.length) processedImage[i+1][j] = 0;
-                    if (structuralElement[2][1] == 1 && j+1<originalImage[i].length) processedImage[i][j+1] = 0;
-                    
-                    if (structuralElement[0][0] == 1 && i>0 && j>0) processedImage[i-1][j-1] = 1;
-                    if (structuralElement[2][0] == 1 && i>0 && j+1<originalImage[i].length) processedImage[i-1][j+1] = 0;
-                    if (structuralElement[0][2] == 1 && i+1<originalImage.length && j>0) processedImage[i+1][j-1] = 0;
-                    if (structuralElement[2][2] == 1 && i+1<originalImage.length && j+1<originalImage[i].length) processedImage[i+1][j+1] = 0;
+                    if (structuralElement[0][0] == 1 && i>0 && j>0 && originalImage[i-1][j-1] == 0) processedImage[i][j] = EROSION_COLOR;
+                    if (structuralElement[2][0] == 1 && i>0 && j+1<originalImage[i].length && originalImage[i-1][j+1] == 0) processedImage[i][j] = EROSION_COLOR;
+                    if (structuralElement[0][2] == 1 && i+1<originalImage.length && j>0 && originalImage[i+1][j-1] == 0) processedImage[i][j] = EROSION_COLOR;
+                    if (structuralElement[2][2] == 1 && i+1<originalImage.length && j+1<originalImage[i].length && originalImage[i+1][j+1] == 0) processedImage[i][j] = EROSION_COLOR;
                 }
             //}
         //}
@@ -490,18 +527,16 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
         
         for (int i=0; i<originalImage.length; i++){
             for (int j=0; j<originalImage[i].length; j++){
-                if (originalImage[i][j] == 0){
-                    if (structuralElement[1][1] == 1) processedImage[i][j] = 0;           
+                if (originalImage[i][j] == 1){                    
+                    if (structuralElement[1][0] == 1 && i>0 && originalImage[i-1][j] == 0) processedImage[i][j] = EROSION_COLOR;
+                    if (structuralElement[0][1] == 1 && j>0 && originalImage[i][j-1] == 0) processedImage[i][j] = EROSION_COLOR;
+                    if (structuralElement[1][2] == 1 && i+1<originalImage.length && originalImage[i+1][j] == 0) processedImage[i][j] = EROSION_COLOR;
+                    if (structuralElement[2][1] == 1 && j+1<originalImage[i].length && originalImage[i][j+1] == 0) processedImage[i][j] = EROSION_COLOR;
                     
-                    if (structuralElement[1][0] == 1 && i>0) processedImage[i-1][j] = 0;
-                    if (structuralElement[0][1] == 1 && j>0) processedImage[i][j-1] = 0;
-                    if (structuralElement[1][2] == 1 && i+1<originalImage.length) processedImage[i+1][j] = 0;
-                    if (structuralElement[2][1] == 1 && j+1<originalImage[i].length) processedImage[i][j+1] = 0;
-                    
-                    if (structuralElement[0][0] == 1 && i>0 && j>0) processedImage[i-1][j-1] = 1;
-                    if (structuralElement[2][0] == 1 && i>0 && j+1<originalImage[i].length) processedImage[i-1][j+1] = 0;
-                    if (structuralElement[0][2] == 1 && i+1<originalImage.length && j>0) processedImage[i+1][j-1] = 0;
-                    if (structuralElement[2][2] == 1 && i+1<originalImage.length && j+1<originalImage[i].length) processedImage[i+1][j+1] = 0;
+                    if (structuralElement[0][0] == 1 && i>0 && j>0 && originalImage[i-1][j-1] == 0) processedImage[i][j] = EROSION_COLOR;
+                    if (structuralElement[2][0] == 1 && i>0 && j+1<originalImage[i].length && originalImage[i-1][j+1] == 0) processedImage[i][j] = EROSION_COLOR;
+                    if (structuralElement[0][2] == 1 && i+1<originalImage.length && j>0 && originalImage[i+1][j-1] == 0) processedImage[i][j] = EROSION_COLOR;
+                    if (structuralElement[2][2] == 1 && i+1<originalImage.length && j+1<originalImage[i].length && originalImage[i+1][j+1] == 0) processedImage[i][j] = EROSION_COLOR;
                 }
             }
         }

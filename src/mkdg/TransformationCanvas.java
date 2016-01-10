@@ -26,7 +26,7 @@ public class TransformationCanvas extends Canvas {
     private int width;
     private int height;
     private int[][] structuralElement;
-    private Point structuralElementPosition;
+    private Point structuralElementPosition = new Point(0,0); //startPoint
     private boolean showStructuralElement = false;
     private int tilesize = 13; //default
         
@@ -56,6 +56,15 @@ public class TransformationCanvas extends Canvas {
             
             for(int y = 0; y < height; y++) {
                 if(binaryModel[x][y] == 1) {
+                    g.setColor(Color.black);
+                    g.fillRect(x*tilesize, y*tilesize, tilesize, tilesize);
+                }
+                if(binaryModel[x][y] == 2) {
+                    g.setColor(Color.DARK_GRAY); //dilation color
+                    g.fillRect(x*tilesize, y*tilesize, tilesize, tilesize);
+                }
+                if(binaryModel[x][y] == 3) {
+                    g.setColor(Color.LIGHT_GRAY); //erosion color
                     g.fillRect(x*tilesize, y*tilesize, tilesize, tilesize);
                 }
             }
@@ -88,6 +97,7 @@ public class TransformationCanvas extends Canvas {
             }
             g2.setColor(Color.red);
             g.fillRect((structuralElementPosition.x)*tilesize, (structuralElementPosition.y)*tilesize, tilesize, tilesize);
+            
         }
         
     }
@@ -112,7 +122,6 @@ public class TransformationCanvas extends Canvas {
     }
      
     public void showStructuralElement() {
-        structuralElementPosition = new Point(0,0);
         showStructuralElement = true;
         this.repaint();
     }
