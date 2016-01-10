@@ -82,7 +82,7 @@ public class TransformationCanvas extends Canvas {
                         } else if (y > 1) {
                             dy = 1;
                         }
-                        g.fillRect((structuralElementPosition.x + dx)*tilesize, (structuralElementPosition.y + dy)*tilesize, tilesize, tilesize);
+                        g.fillRect((structuralElementPosition.x + dy)*tilesize, (structuralElementPosition.y + dx)*tilesize, tilesize, tilesize);
                     }
                 }
             }
@@ -113,6 +113,11 @@ public class TransformationCanvas extends Canvas {
      
     public void showStructuralElement() {
         structuralElementPosition = new Point(0,0);
+        showStructuralElement = true;
+        this.repaint();
+    }
+    
+    public void hideStructuralElement() {
         showStructuralElement = true;
         this.repaint();
     }

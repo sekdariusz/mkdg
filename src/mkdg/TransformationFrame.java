@@ -50,6 +50,9 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
     private JButton autoErosionNextButton;
     
     private Point structuralElementPosition = new Point(0,-1);
+    
+    private Timer autoDilationTimer;
+    private Timer autoErosionTimer;
 
     /**
      * Creates new form TransformationFrame
@@ -229,7 +232,7 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
             
             dilationNextButton = new JButton();
             dilationNextButton.setBounds(20, dilationButton.getX() + dilationButton.getWidth() + 10, width*originalCanvas.getTileSize() + 10 - 40, 25);
-            dilationNextButton.setText(">");
+            dilationNextButton.setText("Przetwórz cały");
        
             c.fill = GridBagConstraints.HORIZONTAL;
             c.gridx = 1;
@@ -240,7 +243,7 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
             
             autoDilationNextButton = new JButton();
             autoDilationNextButton.setBounds(20, dilationButton.getX() + dilationButton.getWidth() + 10, width*originalCanvas.getTileSize() + 10 - 40, 25);
-            autoDilationNextButton.setText("> AUTO");
+            autoDilationNextButton.setText("Krok po kroku");
        
             c.fill = GridBagConstraints.HORIZONTAL;
             c.gridx = 2;
@@ -249,16 +252,13 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
             autoDilationNextButton.addActionListener(this);
             
             processedImage = rgbModel.getImageAsBinaryArray();
-            dilate(rgbModel.getImageAsBinaryArray(), processedImage, structuralElementPosition);
             showImageAfterProcess(processedImage);
-            
-            originalCanvas.showStructuralElement();
-            
+
         } else if (source == erosionButton) {
             
             erosionNextButton = new JButton();
             erosionNextButton.setBounds(20, dilationButton.getX() + dilationButton.getWidth() + 10, width*originalCanvas.getTileSize() + 10 - 40, 25);
-            erosionNextButton.setText(">");
+            erosionNextButton.setText("Przetwórz cały");
        
             c.fill = GridBagConstraints.HORIZONTAL;
             c.gridx = 1;
@@ -269,7 +269,7 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
             
             autoErosionNextButton = new JButton();
             autoErosionNextButton.setBounds(20, dilationButton.getX() + dilationButton.getWidth() + 10, width*originalCanvas.getTileSize() + 10 - 40, 25);
-            autoErosionNextButton.setText("> AUTO");
+            autoErosionNextButton.setText("Krok po kroku");
        
             c.fill = GridBagConstraints.HORIZONTAL;
             c.gridx = 2;
@@ -279,32 +279,63 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
             autoErosionNextButton.addActionListener(this);
             
             processedImage = rgbModel.getImageAsBinaryArray();
-            erode(rgbModel.getImageAsBinaryArray(), processedImage, structuralElementPosition);
             showImageAfterProcess(processedImage);
             
-            originalCanvas.showStructuralElement();
         } else if (source == dilationNextButton) {
-            dilate(rgbModel.getImageAsBinaryArray(), processedImage, structuralElementPosition);
-            showImageAfterProcess(processedImage);   
+            structuralElementPosition = new Point(0,-1);
+            originalCanvas.setStructuralElementPosition(structuralElementPosition);
+            originalCanvas.hideStructuralElement();            
+            dilate(rgbModel.getImageAsBinaryArray(), processedImage);
+            showImageAfterProcess(processedImage);
+            autoDilationNextButton.setText("Krok po kroku");
+            
+            pack();
         } else if (source == erosionNextButton) {
-            erode(rgbModel.getImageAsBinaryArray(), processedImage, structuralElementPosition);
-            showImageAfterProcess(processedImage);   
+            structuralElementPosition = new Point(0,-1);
+            originalCanvas.setStructuralElementPosition(structuralElementPosition);
+            originalCanvas.hideStructuralElement();
+            erode(rgbModel.getImageAsBinaryArray(), processedImage);
+            showImageAfterProcess(processedImage);
+            autoErosionNextButton.setText("Krok po kroku");
+            
+            pack();
         } else if (source == autoDilationNextButton) {
-            new Timer().scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    dilate(rgbModel.getImageAsBinaryArray(), processedImage, structuralElementPosition);
-                    showImageAfterProcess(processedImage);
-                }
-            }, 1*300, 1*200); 
+            if(autoDilationTimer == null) {
+                originalCanvas.showStructuralElement();
+                processedImage = rgbModel.getImageAsBinaryArray();
+                showImageAfterProcess(processedImage);  
+                autoDilationNextButton.setText("STOP");
+                autoDilationTimer = new Timer();
+                autoDilationTimer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        dilate(rgbModel.getImageAsBinaryArray(), processedImage, structuralElementPosition);
+                        showImageAfterProcess(processedImage);
+                    }
+                }, 1*300, 1*200);
+            } else {
+                autoDilationTimer.cancel();
+                autoDilationTimer = null;
+                autoDilationNextButton.setText("Dalej");
+            }
         } else if (source == autoErosionNextButton) {
-            new Timer().scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    erode(rgbModel.getImageAsBinaryArray(), processedImage, structuralElementPosition);
-                    showImageAfterProcess(processedImage);  
-                }
-            }, 1*300, 1*200);     
+            if(autoErosionTimer == null) {
+                originalCanvas.showStructuralElement();
+                processedImage = rgbModel.getImageAsBinaryArray();
+                showImageAfterProcess(processedImage);  
+                autoErosionTimer = new Timer();
+                autoErosionTimer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        erode(rgbModel.getImageAsBinaryArray(), processedImage, structuralElementPosition);
+                        showImageAfterProcess(processedImage);  
+                    }
+                }, 1*300, 1*200);  
+            } else {
+                autoErosionTimer.cancel();
+                autoErosionTimer = null;
+                autoErosionNextButton.setText("Dalej");
+            }
         }  
     }
  
@@ -319,14 +350,14 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
                 if (originalImage[i][j] == 1){
                     if (structuralElement[1][1] == 1) processedImage[i][j] = 1;           
                     
-                    if (structuralElement[0][1] == 1 && i>0) processedImage[i-1][j] = 1;
-                    if (structuralElement[1][0] == 1 && j>0) processedImage[i][j-1] = 1;
-                    if (structuralElement[2][1] == 1 && i+1<originalImage.length) processedImage[i+1][j] = 1;
-                    if (structuralElement[1][2] == 1 && j+1<originalImage[i].length) processedImage[i][j+1] = 1;
+                    if (structuralElement[1][0] == 1 && i>0) processedImage[i-1][j] = 1;
+                    if (structuralElement[0][1] == 1 && j>0) processedImage[i][j-1] = 1;
+                    if (structuralElement[1][2] == 1 && i+1<originalImage.length) processedImage[i+1][j] = 1;
+                    if (structuralElement[2][1] == 1 && j+1<originalImage[i].length) processedImage[i][j+1] = 1;
                     
                     if (structuralElement[0][0] == 1 && i>0 && j>0) processedImage[i-1][j-1] = 1;
-                    if (structuralElement[0][2] == 1 && i>0 && j+1<originalImage[i].length) processedImage[i-1][j+1] = 1;
-                    if (structuralElement[2][0] == 1 && i+1<originalImage.length && j>0) processedImage[i+1][j-1] = 1;
+                    if (structuralElement[2][0] == 1 && i>0 && j+1<originalImage[i].length) processedImage[i-1][j+1] = 1;
+                    if (structuralElement[0][2] == 1 && i+1<originalImage.length && j>0) processedImage[i+1][j-1] = 1;
                     if (structuralElement[2][2] == 1 && i+1<originalImage.length && j+1<originalImage[i].length) processedImage[i+1][j+1] = 1;
                 }
             //}
@@ -348,6 +379,29 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
         originalCanvas.setStructuralElementPosition(p);
     }
     
+        private void dilate(int[][] originalImage, int[][] processedImage){
+        
+        for (int i=0; i<originalImage.length; i++){
+            for (int j=0; j<originalImage[i].length; j++){
+                if (originalImage[i][j] == 1){
+                    if (structuralElement[1][1] == 1) processedImage[i][j] = 1;           
+                    
+                    if (structuralElement[1][0] == 1 && i>0) processedImage[i-1][j] = 1;
+                    if (structuralElement[0][1] == 1 && j>0) processedImage[i][j-1] = 1;
+                    if (structuralElement[1][2] == 1 && i+1<originalImage.length) processedImage[i+1][j] = 1;
+                    if (structuralElement[2][1] == 1 && j+1<originalImage[i].length) processedImage[i][j+1] = 1;
+                    
+                    if (structuralElement[0][0] == 1 && i>0 && j>0) processedImage[i-1][j-1] = 1;
+                    if (structuralElement[2][0] == 1 && i>0 && j+1<originalImage[i].length) processedImage[i-1][j+1] = 1;
+                    if (structuralElement[0][2] == 1 && i+1<originalImage.length && j>0) processedImage[i+1][j-1] = 1;
+                    if (structuralElement[2][2] == 1 && i+1<originalImage.length && j+1<originalImage[i].length) processedImage[i+1][j+1] = 1;
+                }
+            }
+        }
+        
+        showImageAfterProcess(processedImage);
+    }
+    
     private void erode(int[][] originalImage, int[][] processedImage ,Point p){
 
         int i = p.x;
@@ -359,14 +413,14 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
                 if (originalImage[i][j] == 0){
                     if (structuralElement[1][1] == 1) processedImage[i][j] = 0;           
                     
-                    if (structuralElement[0][1] == 1 && i>0) processedImage[i-1][j] = 0;
-                    if (structuralElement[1][0] == 1 && j>0) processedImage[i][j-1] = 0;
-                    if (structuralElement[2][1] == 1 && i+1<originalImage.length) processedImage[i+1][j] = 0;
-                    if (structuralElement[1][2] == 1 && j+1<originalImage[i].length) processedImage[i][j+1] = 0;
+                    if (structuralElement[1][0] == 1 && i>0) processedImage[i-1][j] = 0;
+                    if (structuralElement[0][1] == 1 && j>0) processedImage[i][j-1] = 0;
+                    if (structuralElement[1][2] == 1 && i+1<originalImage.length) processedImage[i+1][j] = 0;
+                    if (structuralElement[2][1] == 1 && j+1<originalImage[i].length) processedImage[i][j+1] = 0;
                     
                     if (structuralElement[0][0] == 1 && i>0 && j>0) processedImage[i-1][j-1] = 1;
-                    if (structuralElement[0][2] == 1 && i>0 && j+1<originalImage[i].length) processedImage[i-1][j+1] = 0;
-                    if (structuralElement[2][0] == 1 && i+1<originalImage.length && j>0) processedImage[i+1][j-1] = 0;
+                    if (structuralElement[2][0] == 1 && i>0 && j+1<originalImage[i].length) processedImage[i-1][j+1] = 0;
+                    if (structuralElement[0][2] == 1 && i+1<originalImage.length && j>0) processedImage[i+1][j-1] = 0;
                     if (structuralElement[2][2] == 1 && i+1<originalImage.length && j+1<originalImage[i].length) processedImage[i+1][j+1] = 0;
                 }
             //}
@@ -386,6 +440,28 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
         }
         
         originalCanvas.setStructuralElementPosition(p);
+    }
+    
+     private void erode(int[][] originalImage, int[][] processedImage){
+        
+        for (int i=0; i<originalImage.length; i++){
+            for (int j=0; j<originalImage[i].length; j++){
+                if (originalImage[i][j] == 0){
+                    if (structuralElement[1][1] == 1) processedImage[i][j] = 0;           
+                    
+                    if (structuralElement[1][0] == 1 && i>0) processedImage[i-1][j] = 0;
+                    if (structuralElement[0][1] == 1 && j>0) processedImage[i][j-1] = 0;
+                    if (structuralElement[1][2] == 1 && i+1<originalImage.length) processedImage[i+1][j] = 0;
+                    if (structuralElement[2][1] == 1 && j+1<originalImage[i].length) processedImage[i][j+1] = 0;
+                    
+                    if (structuralElement[0][0] == 1 && i>0 && j>0) processedImage[i-1][j-1] = 1;
+                    if (structuralElement[2][0] == 1 && i>0 && j+1<originalImage[i].length) processedImage[i-1][j+1] = 0;
+                    if (structuralElement[0][2] == 1 && i+1<originalImage.length && j>0) processedImage[i+1][j-1] = 0;
+                    if (structuralElement[2][2] == 1 && i+1<originalImage.length && j+1<originalImage[i].length) processedImage[i+1][j+1] = 0;
+                }
+            }
+        }
+        showImageAfterProcess(processedImage);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

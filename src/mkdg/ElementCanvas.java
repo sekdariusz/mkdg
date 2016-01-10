@@ -44,7 +44,7 @@ public class ElementCanvas extends Canvas {
                 int crow;
                 ccol = x / tilesize;
                 crow = y / tilesize;
-                System.out.println("crow: "+crow + " ccol: " + ccol);
+                System.out.println("x: " + ccol + " y: "+crow);
                 if((ccol < 3) && (crow < 3)) {
                     Point p = new Point(ccol, crow);
                     if(clickedFields.contains(p) && !(p.x == 1 && p.y == 1)) {
@@ -105,23 +105,23 @@ public class ElementCanvas extends Canvas {
             }
         }
         for(Point p: clickedFields) {
-            if(p.x == 0 && p.y == 0) {
+            if(p.y == 0 && p.x == 0) {
                 array[0][0] = 1;
-            } else if (p.x == 1 && p.y == 0) {
+            } else if (p.y == 1 && p.x == 0) {
                 array[1][0] = 1;
-            } else if (p.x == 2 && p.y == 0) {
+            } else if (p.y == 2 && p.x == 0) {
                 array[2][0] = 1;
-            } else if (p.x == 0 && p.y == 1) {
+            } else if (p.y == 0 && p.x == 1) {
                 array[0][1] = 1;
-            } else if (p.x == 1 && p.y == 1) {
+            } else if (p.y == 1 && p.x == 1) {
                 array[1][1] = 1;
-            } else if (p.x == 2 && p.y == 1) {
+            } else if (p.y == 2 && p.x == 1) {
                 array[2][1] = 1;
-            } else if (p.x == 0 && p.y == 2) {
+            } else if (p.y == 0 && p.x == 2) {
                 array[0][2] = 1;
-            } else if (p.x == 1 && p.y == 2) {
+            } else if (p.y == 1 && p.x == 2) {
                 array[1][2] = 1;
-            } else if (p.x == 2 && p.y == 2) {
+            } else if (p.y == 2 && p.x == 2) {
                 array[2][2] = 1;
             }
         }

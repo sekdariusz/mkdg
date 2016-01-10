@@ -17,9 +17,10 @@ public class FastRGB {
 
     private int width;
     private int height;
-    private boolean hasAlphaChannel;
     private int[] pixels;
     private int threshold = 20;
+    
+    private int[][] binaryPixels;
 
     FastRGB(BufferedImage image){
         pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
@@ -35,18 +36,20 @@ public class FastRGB {
     
     public int[][] getImageAsBinaryArray() {
         
-        int[][] binaryPixels = new int[width][height];
-        int decisionLimit = (int)(-16777216.0/(100.0/(float)threshold));
+        //if(binaryPixels == null) {
+            binaryPixels = new int[width][height];
+            int decisionLimit = (int)(-16777216.0/(100.0/(float)threshold));
         
-        for(int x = 0; x < width; x++) {
-            for(int y = 0; y < height; y++) {
-                if(getRGB(x,y) < decisionLimit) {
-                    binaryPixels[x][y] = 1;
-                } else {
-                    binaryPixels[x][y] = 0;
+            for(int x = 0; x < width; x++) {
+                for(int y = 0; y < height; y++) {
+                    if(getRGB(x,y) < decisionLimit) {
+                        binaryPixels[x][y] = 1;
+                    } else {
+                        binaryPixels[x][y] = 0;
+                    }
                 }
             }
-        }
+        //}
         
         return binaryPixels; 
     }
