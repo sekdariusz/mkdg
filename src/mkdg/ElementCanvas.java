@@ -75,7 +75,7 @@ public class ElementCanvas extends Canvas {
         g.setColor(Color.black);
         for(int i = 0; i < 3 + 1; i++) {
             x1 = 0;
-            y1 = tilesize * i;
+             y1 = tilesize * i;
             x2 = tilesize * 3;
             y2 = tilesize * i;
             g.drawLine(x1, y1, x2, y2);
