@@ -98,7 +98,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     
      private void przed() {
         int elSize = ((int)((float)przed.getHeight()-40)/5);
-        przedNauka = new PrzedNauka(elSize, 2);
+        przedNauka = new PrzedNauka(elSize);
         przedNauka.setBounds((przed.getWidth() - (elSize+1)*5)/2, 20, (elSize+1)*5, (elSize+1)*5);
         przed.add(przedNauka);
                 
@@ -563,6 +563,9 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             );
         }
        
+       new TransformationNauka( makePrzed(), 
+                                makeStructuralElement2());
+       
        
     }//GEN-LAST:event_startActionPerformed
 
@@ -583,6 +586,14 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         return elementCanvas.getStructuralElementArray();
     }
     
+     private int[][] makeStructuralElement2() {
+        return elementNauka.getElementNaukaArray();
+    }
+     
+     private int[][] makePrzed() {
+        return przedNauka.getprzedArray();
+    }
+     
     private void saveLastPath(File selectedFile) {
         String[] dividedPath = selectedFile.getAbsolutePath().split(""+File.separator+File.separator);
         dividedPath = Arrays.copyOf(dividedPath, dividedPath.length - 1);
