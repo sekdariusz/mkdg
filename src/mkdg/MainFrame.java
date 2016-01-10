@@ -313,11 +313,11 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
                 .addGroup(programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(programPanelLayout.createSequentialGroup()
                         .addComponent(InfoElement)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, programPanelLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
-                        .addComponent(po, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addComponent(po, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
             .addGroup(programPanelLayout.createSequentialGroup()
                 .addGap(343, 343, 343)
                 .addComponent(start)
@@ -342,7 +342,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
                     .addGroup(programPanelLayout.createSequentialGroup()
                         .addGap(20, 20, 20)
                         .addComponent(InfoElement)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 356, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
                 .addGroup(programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(programPanelLayout.createSequentialGroup()
                         .addComponent(start)
@@ -462,7 +462,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         );
         gamePicBeforePanelLayout.setVerticalGroup(
             gamePicBeforePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 357, Short.MAX_VALUE)
+            .addGap(0, 356, Short.MAX_VALUE)
         );
 
         gamePicAfterPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Obraz po", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
@@ -476,7 +476,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         );
         gamePicAfterPanelLayout.setVerticalGroup(
             gamePicAfterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 357, Short.MAX_VALUE)
+            .addGap(0, 356, Short.MAX_VALUE)
         );
 
         elementPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
@@ -532,7 +532,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, elementPanel1Layout.createSequentialGroup()
-                .addContainerGap(23, Short.MAX_VALUE)
+                .addContainerGap(291, Short.MAX_VALUE)
                 .addComponent(gameElementPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -544,7 +544,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, gamePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(elementPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 784, Short.MAX_VALUE)
+                    .addComponent(elementPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 837, Short.MAX_VALUE)
                     .addGroup(gamePanelLayout.createSequentialGroup()
                         .addComponent(gamePicBeforePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
@@ -555,7 +555,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, gamePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(elementPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                .addComponent(elementPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 643, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(gamePicAfterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -563,9 +563,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
                 .addContainerGap())
         );
 
-        gamePicBeforePanel.getAccessibleContext().setAccessibleName("Obraz przed");
         gamePicBeforePanel.getAccessibleContext().setAccessibleDescription("");
-        gamePicAfterPanel.getAccessibleContext().setAccessibleName("Obraz po");
         elementPanel1.getAccessibleContext().setAccessibleName("Element strukturalny do odgadnięcia");
 
         tabbedPane.addTab("Gra", gamePanel);
