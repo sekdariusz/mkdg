@@ -86,6 +86,8 @@ public class TransformationCanvas extends Canvas {
                     }
                 }
             }
+            g2.setColor(Color.red);
+            g.fillRect((structuralElementPosition.x)*tilesize, (structuralElementPosition.y)*tilesize, tilesize, tilesize);
         }
         
     }

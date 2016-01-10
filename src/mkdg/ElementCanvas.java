@@ -47,15 +47,17 @@ public class ElementCanvas extends Canvas {
                 System.out.println("crow: "+crow + " ccol: " + ccol);
                 if((ccol < 3) && (crow < 3)) {
                     Point p = new Point(ccol, crow);
-                    if(clickedFields.contains(p)) {
+                    if(clickedFields.contains(p) && !(p.x == 1 && p.y == 1)) {
                         clickedFields.remove(p);
-                    } else {
+                    } else if (!(p.x == 1 && p.y == 1)) {
                         clickedFields.add(p);
                     }
                     repaint();  
                 }
         }
         });
+        
+        clickedFields.add(new Point(1,1));
     }
     
     @Override
