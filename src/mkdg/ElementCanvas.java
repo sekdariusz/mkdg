@@ -29,7 +29,7 @@ public class ElementCanvas extends Canvas {
     private int x2;
     private int y2;
     private boolean klikniecie = false;
-    
+
     private ArrayList<Point> clickedFields = new ArrayList();
     
     public ElementCanvas (final int tilesize) {
