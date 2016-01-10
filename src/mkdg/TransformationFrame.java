@@ -147,28 +147,29 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
     private void showImageAfterProcess(int[][] binaryModelAfterProcess) {
         
         //this.setPreferredSize(new Dimension((int)(width*originalCanvas.getTileSize() * 2 + 20), this.getHeight()));
-
-        if(afterProcessCanvas != null) {
-            binaryImagePanel.remove(afterProcessCanvas);
+        
+        if(afterProcessCanvas == null) {
+            afterProcessCanvas = new TransformationCanvas(binaryModelAfterProcess, structuralElement);
+            binaryImagePanel.setBounds(0,0, width*originalCanvas.getTileSize() * 2 + 20, height*originalCanvas.getTileSize());
+        
+            originalCanvas.setBounds(5, 
+                                    0, 
+                                    width*originalCanvas.getTileSize(),
+                                    height*originalCanvas.getTileSize());
+        
+            afterProcessCanvas.setBounds(originalCanvas.getWidth() + 10, 
+                                        0, 
+                                        width*originalCanvas.getTileSize(),
+                                        height*originalCanvas.getTileSize());
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.gridx = 1;
+            c.gridy = 0;
+            binaryImagePanel.add(afterProcessCanvas, c);       
+            this.pack();
+        } else {
+            afterProcessCanvas.updateBinaryImage(binaryModelAfterProcess);
         }
-          
-        afterProcessCanvas = new TransformationCanvas(binaryModelAfterProcess, structuralElement);
-        binaryImagePanel.setBounds(0,0, width*originalCanvas.getTileSize() * 2 + 20, height*originalCanvas.getTileSize());
-        
-        originalCanvas.setBounds(5, 
-                                 0, 
-                                 width*originalCanvas.getTileSize(),
-                                 height*originalCanvas.getTileSize());
-        
-        afterProcessCanvas.setBounds(originalCanvas.getWidth() + 10, 
-                                     0, 
-                                     width*originalCanvas.getTileSize(),
-                                     height*originalCanvas.getTileSize());
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 1;
-        c.gridy = 0;
-        binaryImagePanel.add(afterProcessCanvas, c);       
-        this.pack();
+  
     }
     
     private void initAditionalElements() {
