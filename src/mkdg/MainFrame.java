@@ -545,12 +545,10 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             komentarzText.setText("<b>EROZJA</b><br>"
                     + "         <b>1.</b> Wybierany jest punkt A z obrazu PRZED. <br>"
                     + "         <b>2.</b> Na punkt A nakładamy element strukturalny, tak, aby <font color = red>środek </font> pokrywał punkt A.<br>"
-                    + "         <b>3.</b> Porównujemy, czy punkt A jest tak zamalowany/niezamalowany jak <font color = red>środek </font> elementu strukturalnego.<br>"
-                    + "         <b>4.</b> Jeśli TAK: przechodzimy do punktu 5, jeśli NIE: przechodzimy do punktu 1.<br>"
-                    + "         <b>5.</b> Porównujemy, czy otoczenie punktu A jest tak zamalowane jest otoczenie <font color = red>środka </font> elementu strukturalnego.<br>"
-                    + "         <b>6a.</b> Jeśli TAK: na obrazie PO w punkcie A' zamalowywany jest prostokąt<br>"
-                    + "         <b>6b.</b> Jeśli NIE: na obrazie PO w punkcie A' pozostaje pusty prostokąt<br>"
-                    + "         <b>7.</b> Wracamy do punktu 1.<br>"
+                    + "         <b>3.</b> Porównujemy, czy WSZYSTKIE punkty otoczenia A są tak zamalowane jak otoczenie <font color = red>środka </font> elementu strukturalnego.<br>"
+                    + "         <b>4a.</b> Jeśli TAK: na obrazie PO w punkcie A' zamalowywany jest prostokąt<br>"
+                    + "         <b>4b.</b> Jeśli NIE: na obrazie PO w punkcie A' pozostaje pusty prostokąt<br>"
+                    + "         <b>5.</b> Wracamy do punktu 1.<br>"
             );
         }
         else if(radioDylatacja.isSelected()){
@@ -558,8 +556,8 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             komentarzText.setText("<b>DYLATACJA</b><br>"
                     + "         <b>1.</b> Wybierany jest punkt A z obrazu PRZED. <br>"
                     + "         <b>2.</b> Na punkt A nakładamy element strukturalny, tak, aby <font color = red>środek </font> pokrywał punkt A.<br>"
-                    + "         <b>3.</b> Porównujemy, czy punkt A jest tak zamalowany/niezamalowany jak <font color = red>środek </font> elementu strukturalnego.<br>"
-                    + "         <b>4a.</b> Jeśli TAK: na obrazie PO w punkcie A' zamalowywane są prostokąty, tak jak w ułożeniu elementu strukturalnego. Inaczej mówiąc, w punkcie A' stawiamy pieczątkę w kształcie elementu strukturalnego.<br>"
+                    + "         <b>3.</b> Porównujemy, czy CHOĆ JEDEN punkt otoczenia A jest tak zamalowany jak otoczenie <font color = red>środka </font> elementu strukturalnego.<br>"
+                    + "         <b>4a.</b> Jeśli TAK: na obrazie PO w punkcie A' zamalowywany jest prostokąt<br>"
                     + "         <b>4b.</b> Jeśli NIE: na obrazie PO w punkcie A' pozostaje pusty prostokąt<br>"
                     + "         <b>5.</b> Wracamy do punktu 1.<br>"
             );
