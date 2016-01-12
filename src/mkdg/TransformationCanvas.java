@@ -76,15 +76,15 @@ public class TransformationCanvas extends Canvas {
                 
                 tilesize = 35;
                 for(int y = 0; y < height; y++) {
-                if(binaryModel[y][x] == 1) {
+                if(binaryModel[x][y] == 1) {
                     g.setColor(Color.black);
                     g.fillRect(x*tilesize, y*tilesize, tilesize, tilesize);
                 }
-                if(binaryModel[y][x] == 2) {
+                if(binaryModel[x][y] == 2) {
                     g.setColor(Color.DARK_GRAY); //dilation color
                     g.fillRect(x*tilesize, y*tilesize, tilesize, tilesize);
                 }
-                if(binaryModel[y][x] == 3) {
+                if(binaryModel[x][y] == 3) {
                     g.setColor(Color.LIGHT_GRAY); //erosion color
                     g.fillRect(x*tilesize, y*tilesize, tilesize, tilesize);
                 }
