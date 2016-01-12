@@ -712,6 +712,26 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
                     + "         <b>5.</b> Wracamy do punktu 1.<br>"
             );
             
+            if(autoErosionTimer == null ) {
+                                
+                int xMax = makePrzed().length;
+                int yMax = makePrzed()[0].length;
+                int[][] copy = makePrzed();
+                for(int x = 0; x <xMax; x++) {
+                    for(int y = 0; y<yMax; y++) {
+                       processedImage2[x][y] = copy[x][y];
+                    }
+                }
+                showImageAfterProcess2(processedImage2);  
+                autoErosionTimer = new Timer();
+                autoErosionTimer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        erode(makePrzed(), processedImage2, structuralElementPosition2);
+                        showImageAfterProcess2(processedImage2);  
+                    }
+                }, 1*300, 1*200);  
+       }
             
         }
         else if(radioDylatacja.isSelected()){
@@ -727,15 +747,24 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             
             if(autoDilationTimer == null) {
                 
+                int xMax = makePrzed().length;
+                int yMax = makePrzed()[0].length;
+                int[][] copy = makePrzed();
+                for(int x = 0; x <xMax; x++) {
+                    for(int y = 0; y<yMax; y++) {
+                       processedImage2[x][y] = copy[x][y];
+                    }
+                }
+                
                 autoDilationTimer = new Timer();
                 autoDilationTimer.scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
                         dilate(obrazPrzed2, processedImage2, structuralElementPosition2);
-                       // showImageAfterProcess2(processedImage2);
+                        showImageAfterProcess2(processedImage2);
                     }
                 }, 1*300, 1*200);
-        }
+       }
         
     
         }
@@ -781,13 +810,54 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         }
         
         obrazPrzed.setStructuralElementPosition(p);
-        showImageAfterProcess2(processedImage2);
     }
-              
+            
+     
+    private void erode(int[][] originalImage, int[][] processedImage ,Point p){
+
+        int i = p.x;
+        int j = p.y;
+        
+        int[][] structuralElement = new int[makeStructuralElement2().length][makeStructuralElement2()[0].length];
+        
+        if(i >= 0 && j >= 0) {
+        //for (int i=0; i<image.length; i++){
+            //for (int j=0; j<image[i].length; j++){
+                if (originalImage[i][j] == 1){                    
+                    if (structuralElement[1][0] == 1 && i>0 && originalImage[i-1][j] == 0) processedImage[i][j] = EROSION_COLOR;
+                    if (structuralElement[0][1] == 1 && j>0 && originalImage[i][j-1] == 0) processedImage[i][j] = EROSION_COLOR;
+                    if (structuralElement[1][2] == 1 && i+1<originalImage.length && originalImage[i+1][j] == 0) processedImage[i][j] = EROSION_COLOR;
+                    if (structuralElement[2][1] == 1 && j+1<originalImage[i].length && originalImage[i][j+1] == 0) processedImage[i][j] = EROSION_COLOR;
+                    
+                    if (structuralElement[0][0] == 1 && i>0 && j>0 && originalImage[i-1][j-1] == 0) processedImage[i][j] = EROSION_COLOR;
+                    if (structuralElement[2][0] == 1 && i>0 && j+1<originalImage[i].length && originalImage[i-1][j+1] == 0) processedImage[i][j] = EROSION_COLOR;
+                    if (structuralElement[0][2] == 1 && i+1<originalImage.length && j>0 && originalImage[i+1][j-1] == 0) processedImage[i][j] = EROSION_COLOR;
+                    if (structuralElement[2][2] == 1 && i+1<originalImage.length && j+1<originalImage[i].length && originalImage[i+1][j+1] == 0) processedImage[i][j] = EROSION_COLOR;
+                }
+            //}
+        //}
+        }
+        
+        if (p.y + 1 < originalImage[0].length) {
+            p.y++;
+        } else {
+            if(p.x + 1 < originalImage.length) {
+                p.y = 0;
+                p.x++;
+            } else {
+                p.y = 0;
+                p.x = 0;
+            }
+        }
+        
+        obrazPrzed.setStructuralElementPosition(p);
+    }
+     
      private void showImageAfterProcess2 (int[][] binaryModelAfterProcess2) {
         
+        //afterProcessCanvas2.updateBinaryImage(binaryModelAfterProcess2);
         //this.setPreferredSize(new Dimension((int)(width*originalCanvas.getTileSize() * 2 + 20), this.getHeight()));
-        if(afterProcessCanvas2 == null || kliknieciestart==1 ) {
+        if(afterProcessCanvas2 == null ) {
             int elSize = ((int)((float)po.getHeight()-40)/5);
             po.removeAll();
       
@@ -810,6 +880,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         elementPanel2.removeAll();
         komentarzText.setText(" ");  
         kliknieciestart =0;
+        autoDilationTimer = null ; 
         
         ElementPan2();
         przed();
