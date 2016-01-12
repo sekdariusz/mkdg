@@ -80,11 +80,11 @@ public class TransformationCanvas extends Canvas {
                     g.setColor(Color.black);
                     g.fillRect(x*tilesize, y*tilesize, tilesize, tilesize);
                 }
-                if(binaryModel[x][y] == 2) {
+                if(binaryModel[y][x] == 2) {
                     g.setColor(Color.DARK_GRAY); //dilation color
                     g.fillRect(x*tilesize, y*tilesize, tilesize, tilesize);
                 }
-                if(binaryModel[x][y] == 3) {
+                if(binaryModel[y][x] == 3) {
                     g.setColor(Color.LIGHT_GRAY); //erosion color
                     g.fillRect(x*tilesize, y*tilesize, tilesize, tilesize);
                 }

@@ -24,6 +24,8 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.Properties;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -45,8 +47,21 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     private ElementCanvas elementGame;
     private PrzedNauka przedNauka;
     private BufferedImage zoomedImage;
+    // agata - wiem, wiem, produkuję wiecej kodu, ale inaczej nie dam rady
     private TransformationCanvas obrazPrzed;
+    private int[][] processedImage2;
+    private int[][] elementNauka2;
+    private int[][] obrazPrzed2;
+    private TransformationCanvas afterProcessCanvas2;
+    private Point structuralElementPosition2 = new Point(0,-1);
+    private Timer autoDilationTimer;
+    private Timer autoErosionTimer;
+    private int kliknieciestart = 0;
+    private final int DILATION_COLOR = 2;
+    private final int EROSION_COLOR = 3;
+    
     private boolean loadPreviousConfiguration = false;
+    
     
         /**
      * Creates new form MainFrame
@@ -106,8 +121,6 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         elementNauka = new ElementNauka(elSize);
         elementNauka.setBounds((elementPanel2.getWidth() - (elSize+1)*3)/2, 20, (elSize+1)*3, (elSize+1)*3);
         elementPanel2.add(elementNauka);
-             
-        
     }
     
      private void przed() {
@@ -116,8 +129,6 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         przedNauka = new PrzedNauka(elSize);
         przedNauka.setBounds((przed.getWidth() - (elSize+1)*5)/2, 20, (elSize+1)*5, (elSize+1)*5);
         przed.add(przedNauka);
-     
-                
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -146,6 +157,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         start = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         komentarzText = new javax.swing.JEditorPane();
+        cofnij = new javax.swing.JButton();
         teachPanel = new javax.swing.JPanel();
         binaryImagePanel = new javax.swing.JPanel();
         zoomedImagePanel = new javax.swing.JPanel();
@@ -297,12 +309,26 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         komentarzText.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane2.setViewportView(komentarzText);
 
+        cofnij.setText("COFNIJ");
+        cofnij.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cofnijActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout programPanelLayout = new javax.swing.GroupLayout(programPanel);
         programPanel.setLayout(programPanelLayout);
         programPanelLayout.setHorizontalGroup(
             programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(programPanelLayout.createSequentialGroup()
                 .addGroup(programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(programPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(przed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(po, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(programPanelLayout.createSequentialGroup()
                         .addGap(24, 24, 24)
                         .addGroup(programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -313,20 +339,17 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
                             .addComponent(InfoDylatacja)
                             .addComponent(InfoErozja))
                         .addGap(66, 66, 66)
-                        .addComponent(elementPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(66, 66, 66)
-                        .addComponent(InfoElement))
-                    .addGroup(programPanelLayout.createSequentialGroup()
-                        .addGap(343, 343, 343)
-                        .addComponent(start))
-                    .addGroup(programPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(przed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(po, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(programPanelLayout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(start)
+                                .addGap(28, 28, 28)
+                                .addComponent(cofnij))
+                            .addGroup(programPanelLayout.createSequentialGroup()
+                                .addComponent(elementPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(66, 66, 66)
+                                .addComponent(InfoElement)))))
+                .addContainerGap(82, Short.MAX_VALUE))
         );
         programPanelLayout.setVerticalGroup(
             programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -348,11 +371,12 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
                         .addGap(20, 20, 20)
                         .addComponent(InfoElement)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(start)
+                    .addComponent(cofnij))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(programPanelLayout.createSequentialGroup()
-                        .addComponent(start)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(przed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(po, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(34, 34, 34))
@@ -663,6 +687,20 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     private void startActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startActionPerformed
         // TODO add your handling code here:
         // są problemy ze sprawdzeniem, czy rysunek jest narysowany, więc odpuszczam sprawdzanie
+        kliknieciestart = 1;
+        int elSize = ((int)((float)przed.getHeight()-40)/5);
+        przed.removeAll();
+      
+        obrazPrzed = new TransformationCanvas(makePrzed(), makeStructuralElement2(), 1);
+        obrazPrzed.setBounds((przed.getWidth() - (elSize+1)*5)/2, 20, (elSize+1)*5, (elSize+1)*5);
+        obrazPrzed.showStructuralElement();
+        obrazPrzed.repaint();
+        przed.add(obrazPrzed);
+      
+        processedImage2 = new int[makePrzed().length][makePrzed()[0].length];
+        showImageAfterProcess2(processedImage2);
+        obrazPrzed2 = new int[makePrzed().length][makePrzed()[0].length];
+        
        if(radioErozja.isSelected()){
             komentarzText.setContentType("text/html");
             komentarzText.setText("<b>EROZJA</b><br>"
@@ -673,9 +711,11 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
                     + "         <b>4b.</b> Jeśli NIE: na obrazie PO w punkcie A' pozostaje pusty prostokąt<br>"
                     + "         <b>5.</b> Wracamy do punktu 1.<br>"
             );
+            
+            
         }
         else if(radioDylatacja.isSelected()){
-             komentarzText.setContentType("text/html");
+            komentarzText.setContentType("text/html");
             komentarzText.setText("<b>DYLATACJA</b><br>"
                     + "         <b>1.</b> Wybierany jest punkt A z obrazu PRZED. <br>"
                     + "         <b>2.</b> Na punkt A nakładamy element strukturalny, tak, aby <font color = red>środek </font> pokrywał punkt A.<br>"
@@ -684,24 +724,101 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
                     + "         <b>4b.</b> Jeśli NIE: na obrazie PO w punkcie A' pozostaje pusty prostokąt<br>"
                     + "         <b>5.</b> Wracamy do punktu 1.<br>"
             );
+            
+            if(autoDilationTimer == null) {
+                
+                autoDilationTimer = new Timer();
+                autoDilationTimer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        dilate(obrazPrzed2, processedImage2, structuralElementPosition2);
+                       // showImageAfterProcess2(processedImage2);
+                    }
+                }, 1*300, 1*200);
         }
-       
-      // new TransformationNauka( makePrzed(), makeStructuralElement2());
-      int elSize = ((int)((float)przed.getHeight()-40)/5);
-      przed.removeAll();
-      
-      obrazPrzed = new TransformationCanvas(makePrzed(), makeStructuralElement2(), 1);
-      obrazPrzed.setBounds((przed.getWidth() - (elSize+1)*5)/2, 20, (elSize+1)*5, (elSize+1)*5);
-      obrazPrzed.showStructuralElement();
-      obrazPrzed.repaint();
-      przed.add(obrazPrzed);
-      
-      
-                     
+        
+    
+        }
+                
     }//GEN-LAST:event_startActionPerformed
 
-    
+    // agata - moje przeróbki, wiem, brzydko to wygląda, ale inaczej nie moge tego wrzucic do okna po , niestety
+     private void dilate(int[][] obrazPrzed2, int[][] processedImage2 ,Point p){
+
+        int i = p.x;
+        int j = p.y;
+        
+        elementNauka2 = new int[makeStructuralElement2().length][makeStructuralElement2()[0].length];
+        
+        if(i >= 0 && j >= 0) {
+        //for (int i=0; i<image.length; i++){
+            //for (int j=0; j<image[i].length; j++){
+                if (obrazPrzed2[i][j] == 0){
+                    if (elementNauka2[1][0] == 1 && i>0 && obrazPrzed2[i-1][j] == 1) processedImage2[i][j] = DILATION_COLOR;
+                    if (elementNauka2[0][1] == 1 && j>0 && obrazPrzed2[i][j-1] == 1) processedImage2[i][j] = DILATION_COLOR;
+                    if (elementNauka2[1][2] == 1 && i+1<obrazPrzed2.length && obrazPrzed2[i+1][j] == 1) processedImage2[i][j] = DILATION_COLOR;
+                    if (elementNauka2[2][1] == 1 && j+1<obrazPrzed2[i].length && obrazPrzed2[i][j+1] == 1) processedImage2[i][j] = DILATION_COLOR;
+                    
+                    if (elementNauka2[0][0] == 1 && i>0 && j>0 && obrazPrzed2[i-1][j-1] == 1) processedImage2[i][j] = DILATION_COLOR;
+                    if (elementNauka2[2][0] == 1 && i>0 && j+1<obrazPrzed2[i].length && obrazPrzed2[i-1][j+1] == 1) processedImage2[i][j] = DILATION_COLOR;
+                    if (elementNauka2[0][2] == 1 && i+1<obrazPrzed2.length && j>0 && obrazPrzed2[i+1][j-1] == 1) processedImage2[i][j] = DILATION_COLOR;
+                    if (elementNauka2[2][2] == 1 && i+1<obrazPrzed2.length && j+1<obrazPrzed2[i].length && obrazPrzed2[i+1][j+1] == 1) processedImage2[i][j] = DILATION_COLOR;
+                }
+            //}
+        //}
+        }
+        
+        if (p.y + 1 < obrazPrzed2[0].length) {
+            p.y++;
+        } else {
+            if(p.x + 1 < obrazPrzed2.length) {
+                p.y = 0;
+                p.x++;
+            } else {
+                p.y = 0;
+                p.x = 0;
+            }
+        }
+        
+        obrazPrzed.setStructuralElementPosition(p);
+        showImageAfterProcess2(processedImage2);
+    }
+              
+     private void showImageAfterProcess2 (int[][] binaryModelAfterProcess2) {
+        
+        //this.setPreferredSize(new Dimension((int)(width*originalCanvas.getTileSize() * 2 + 20), this.getHeight()));
+        if(afterProcessCanvas2 == null || kliknieciestart==1 ) {
+            int elSize = ((int)((float)po.getHeight()-40)/5);
+            po.removeAll();
       
+            afterProcessCanvas2 = new TransformationCanvas(makePrzed(), makeStructuralElement2(), 1);
+            afterProcessCanvas2.setBounds((po.getWidth() - (elSize+1)*5)/2, 20, (elSize+1)*5, (elSize+1)*5);
+            afterProcessCanvas2.hideStructuralElement();
+            afterProcessCanvas2.repaint();
+            po.add(afterProcessCanvas2);
+        } else {
+            afterProcessCanvas2.updateBinaryImage(binaryModelAfterProcess2);
+        }
+  
+    }
+    
+    
+    private void cofnijActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cofnijActionPerformed
+        // TODO add your handling code here:
+        przed.removeAll();
+        po.removeAll();
+        elementPanel2.removeAll();
+        komentarzText.setText(" ");  
+        kliknieciestart =0;
+        
+        ElementPan2();
+        przed();
+    }//GEN-LAST:event_cofnijActionPerformed
+   
+   
+    
+    
+    
     private void checkIfImagesAreLoded() {
         if(binaryImagePanel.getComponentCount() == 0) {
             JOptionPane.showMessageDialog(null, "Wczytaj obraz w celu dalszego przetwarzania");
@@ -792,6 +909,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     private javax.swing.JFrame InfoEro;
     private javax.swing.JButton InfoErozja;
     private javax.swing.JPanel binaryImagePanel;
+    private javax.swing.JButton cofnij;
     private javax.swing.JPanel elementPanel;
     private javax.swing.JPanel elementPanel1;
     private javax.swing.JPanel elementPanel2;
