@@ -777,7 +777,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         int i = p.x;
         int j = p.y;
         
-        elementNauka2 = new int[makeStructuralElement2().length][makeStructuralElement2()[0].length];
+        elementNauka2 = makeStructuralElement2();
         
         if(i >= 0 && j >= 0) {
         //for (int i=0; i<image.length; i++){
@@ -818,7 +818,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         int i = p.x;
         int j = p.y;
         
-        int[][] structuralElement = new int[makeStructuralElement2().length][makeStructuralElement2()[0].length];
+        int[][] structuralElement = makeStructuralElement2();
         
         if(i >= 0 && j >= 0) {
         //for (int i=0; i<image.length; i++){
@@ -861,7 +861,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             int elSize = ((int)((float)po.getHeight()-40)/5);
             po.removeAll();
       
-            afterProcessCanvas2 = new TransformationCanvas(makePrzed(), makeStructuralElement2(), 1);
+            afterProcessCanvas2 = new TransformationCanvas(binaryModelAfterProcess2, makeStructuralElement2(), 1);
             afterProcessCanvas2.setBounds((po.getWidth() - (elSize+1)*5)/2, 20, (elSize+1)*5, (elSize+1)*5);
             afterProcessCanvas2.hideStructuralElement();
             afterProcessCanvas2.repaint();
