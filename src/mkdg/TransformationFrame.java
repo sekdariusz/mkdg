@@ -154,7 +154,7 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
         //this.setPreferredSize(new Dimension((int)(width*originalCanvas.getTileSize() * 2 + 20), this.getHeight()));
         
         if(afterProcessCanvas == null) {
-            afterProcessCanvas = new TransformationCanvas(binaryModelAfterProcess, structuralElement);
+            afterProcessCanvas = new TransformationCanvas(binaryModelAfterProcess, structuralElement, 0);
             binaryImagePanel.setBounds(0,0, width*originalCanvas.getTileSize() * 2 + 20, height*originalCanvas.getTileSize());
         
             originalCanvas.setBounds(5, 

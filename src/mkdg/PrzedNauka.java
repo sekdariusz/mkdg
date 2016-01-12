@@ -105,6 +105,19 @@ public class PrzedNauka extends Canvas {
                 array[i][j] = 0;
             }
         }
+        
+        if (klikniecie == false){
+            array[0][0] = 1;
+            array[1][0] = 1;          
+            array[2][2] = 1;  
+            array[3][1] = 1;
+            array[4][4] = 1;          
+            array[1][1] = 1; 
+            array[2][1] = 1;          
+            array[4][3] = 1; 
+       
+        }
+        else if (klikniecie == true){
         for(Point p: clickedFields) {
               if(p.y == 0 && p.x == 0) {
                 array[0][0] = 1;
@@ -162,7 +175,7 @@ public class PrzedNauka extends Canvas {
                 array[4][4] = 1;
             }
         }
-        
+        }
         //print
         for(int i = 0; i < array.length; i++) {
             for(int j = 0; j<array[0].length; j++) {

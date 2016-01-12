@@ -21,7 +21,7 @@ public class TransformationNauka {
         this.binaryModel = binaryModelNauka;
         this.structuralElement = structuralElement;
         
-        obrazPrzed = new TransformationCanvas(binaryModel, structuralElement);
+        obrazPrzed = new TransformationCanvas(binaryModel, structuralElement,1);
        // obrazPrzed.setBounds((przed.getWidth() - (elSize+1)*5)/2, 20, (elSize+1)*5, (elSize+1)*5);
        // przed.add(przedNauka);
         

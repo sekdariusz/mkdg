@@ -29,6 +29,7 @@ public class TransformationCanvas extends Canvas {
     private Point structuralElementPosition = new Point(0,0); //startPoint
     private boolean showStructuralElement = false;
     private int tilesize = 13; //default
+    private int zakladka = 0;
         
     public TransformationCanvas(FastRGB rgbModel, int[][] structuralElement) {
         this.structuralElement = structuralElement;
@@ -38,11 +39,12 @@ public class TransformationCanvas extends Canvas {
         this.height = binaryModel[0].length;
     }
     
-     public TransformationCanvas(int[][] binaryModel, int[][] structuralElement) {
+     public TransformationCanvas(int[][] binaryModel, int[][] structuralElement, int zakladka) {
         this.structuralElement = structuralElement;
         this.binaryModel = binaryModel;
         this.width = binaryModel.length;
         this.height = binaryModel[0].length;
+        this.zakladka = zakladka;
     }
     
     @Override
@@ -53,6 +55,8 @@ public class TransformationCanvas extends Canvas {
         
         g.setColor(Color.black);
         for(int x = 0; x < width; x++) {
+            
+            if (zakladka == 0){
             
             for(int y = 0; y < height; y++) {
                 if(binaryModel[x][y] == 1) {
@@ -67,6 +71,25 @@ public class TransformationCanvas extends Canvas {
                     g.setColor(Color.LIGHT_GRAY); //erosion color
                     g.fillRect(x*tilesize, y*tilesize, tilesize, tilesize);
                 }
+            }}
+            else if (zakladka ==1){
+                
+                tilesize = 35;
+                for(int y = 0; y < height; y++) {
+                if(binaryModel[y][x] == 1) {
+                    g.setColor(Color.black);
+                    g.fillRect(x*tilesize, y*tilesize, tilesize, tilesize);
+                }
+                if(binaryModel[x][y] == 2) {
+                    g.setColor(Color.DARK_GRAY); //dilation color
+                    g.fillRect(x*tilesize, y*tilesize, tilesize, tilesize);
+                }
+                if(binaryModel[x][y] == 3) {
+                    g.setColor(Color.LIGHT_GRAY); //erosion color
+                    g.fillRect(x*tilesize, y*tilesize, tilesize, tilesize);
+                }
+            }
+            
             }
         }
         

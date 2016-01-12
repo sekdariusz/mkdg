@@ -7,8 +7,10 @@ package mkdg;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
@@ -30,6 +32,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 
+
 /**
  *
  * @author daroslav
@@ -42,9 +45,10 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     private ElementCanvas elementGame;
     private PrzedNauka przedNauka;
     private BufferedImage zoomedImage;
+    private TransformationCanvas obrazPrzed;
     private boolean loadPreviousConfiguration = false;
     
-    /**
+        /**
      * Creates new form MainFrame
      */
     public MainFrame() {
@@ -97,19 +101,22 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     // macierz dla nauki
     
     private void ElementPan2() {
+       
         int elSize = ((int)((float)elementPanel2.getHeight()-40)/3);
         elementNauka = new ElementNauka(elSize);
         elementNauka.setBounds((elementPanel2.getWidth() - (elSize+1)*3)/2, 20, (elSize+1)*3, (elSize+1)*3);
         elementPanel2.add(elementNauka);
-        
+             
         
     }
     
      private void przed() {
+      
         int elSize = ((int)((float)przed.getHeight()-40)/5);
         przedNauka = new PrzedNauka(elSize);
         przedNauka.setBounds((przed.getWidth() - (elSize+1)*5)/2, 20, (elSize+1)*5, (elSize+1)*5);
         przed.add(przedNauka);
+     
                 
     }
     /**
@@ -285,6 +292,9 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             }
         });
 
+        komentarzText.setEditable(false);
+        komentarzText.setAutoscrolls(false);
+        komentarzText.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane2.setViewportView(komentarzText);
 
         javax.swing.GroupLayout programPanelLayout = new javax.swing.GroupLayout(programPanel);
@@ -457,7 +467,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         );
         gamePicBeforePanelLayout.setVerticalGroup(
             gamePicBeforePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 356, Short.MAX_VALUE)
+            .addGap(0, 357, Short.MAX_VALUE)
         );
 
         gamePicAfterPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Obraz po", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
@@ -471,7 +481,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         );
         gamePicAfterPanelLayout.setVerticalGroup(
             gamePicAfterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 356, Short.MAX_VALUE)
+            .addGap(0, 357, Short.MAX_VALUE)
         );
 
         elementPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
@@ -676,10 +686,18 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             );
         }
        
-       new TransformationNauka( makePrzed(), 
-                                makeStructuralElement2());
-       
-       
+      // new TransformationNauka( makePrzed(), makeStructuralElement2());
+      int elSize = ((int)((float)przed.getHeight()-40)/5);
+      przed.removeAll();
+      
+      obrazPrzed = new TransformationCanvas(makePrzed(), makeStructuralElement2(), 1);
+      obrazPrzed.setBounds((przed.getWidth() - (elSize+1)*5)/2, 20, (elSize+1)*5, (elSize+1)*5);
+      obrazPrzed.showStructuralElement();
+      obrazPrzed.repaint();
+      przed.add(obrazPrzed);
+      
+      
+                     
     }//GEN-LAST:event_startActionPerformed
 
     

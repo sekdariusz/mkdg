@@ -43,10 +43,10 @@ public class ElementNauka extends Canvas {
                     Point p = new Point(ccol, crow);
                     if(clickedFields.contains(p) && !(p.x == 1 && p.y == 1)) {
                         clickedFields.remove(p);
-                    } else {
+                    } else if (!(p.x == 1 && p.y == 1)) {
                         clickedFields.add(p);
                     }
-                    repaint();  
+                    repaint();
                 }
         }
         });
@@ -73,23 +73,17 @@ public class ElementNauka extends Canvas {
             g.drawLine(x1, y1, x2, y2);
         }
         
+        Point p1 = new Point(1, 1);
+        g.setColor(Color.red);
+        g.fillRect(p1.x*tilesize, p1.y*tilesize, tilesize, tilesize);
         
         for(Point p : clickedFields) {
-            if( p.getX() == 1 & p.getY() == 1 ){
-                g.setColor(Color.red);
-                g.fillRect(p.x*tilesize, p.y*tilesize, tilesize, tilesize);
-            }
-            else {
                 g.setColor(Color.black);
                 g.fillRect(p.x*tilesize, p.y*tilesize, tilesize, tilesize);
-            }
-            
+                            
         }
         
         if(klikniecie== false){
-          Point p2 = new Point(1, 1);
-          g.setColor(Color.red);
-          g.fillRect(p2.x*tilesize, p2.y*tilesize, tilesize, tilesize);
           Point p3 = new Point(2, 1);
           g.setColor(Color.black);
           g.fillRect(p3.x*tilesize, p3.y*tilesize, tilesize, tilesize);
@@ -104,6 +98,12 @@ public class ElementNauka extends Canvas {
                 array[i][j] = 0;
             }
         }
+        if (klikniecie == false){
+            array[1][1] = 1;
+            array[1][2] = 1;          
+                   
+        }
+       else if (klikniecie == true){
        for(Point p: clickedFields) {
             if(p.y == 0 && p.x == 0) {
                 array[0][0] = 1;
@@ -124,7 +124,7 @@ public class ElementNauka extends Canvas {
             } else if (p.y == 2 && p.x == 2) {
                 array[2][2] = 1;
             }
-        }
+        }}
         
         //print
         for(int i = 0; i < array.length; i++) {
