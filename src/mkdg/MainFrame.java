@@ -11,6 +11,8 @@ import java.awt.GridBagConstraints;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
@@ -72,6 +74,44 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         initChooseElementGame();
         ElementPan2();
         przed();
+        
+        radioErozja.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                next.setEnabled(false);
+                structuralElementPosition2 = new Point(0,-1);
+                przed.removeAll();
+                po.removeAll();
+                elementPanel2.removeAll();
+                komentarzText.setText(" ");  
+                kliknieciestart = 0;
+                step = 1;
+        
+                afterProcessCanvas2 = null;
+        
+                ElementPan2();
+                przed();
+            }
+        });
+        
+        radioDylatacja.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                next.setEnabled(false);
+                structuralElementPosition2 = new Point(0,-1);
+                przed.removeAll();
+                po.removeAll();
+                elementPanel2.removeAll();
+                komentarzText.setText(" ");  
+                kliknieciestart = 0;
+                step = 1;
+        
+                afterProcessCanvas2 = null;
+        
+                ElementPan2();
+                przed();
+            }
+        });
         
         Properties prop = new Properties();
         InputStream is = null;
