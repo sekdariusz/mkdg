@@ -119,59 +119,59 @@ public class PrzedNauka extends Canvas {
         }
         else if (klikniecie == true){
         for(Point p: clickedFields) {
-              if(p.y == 0 && p.x == 0) {
+              if(p.x == 0 && p.y == 0) {
                 array[0][0] = 1;
-            } else if (p.y == 1 && p.x == 0) {
+            } else if (p.x == 1 && p.y == 0) {
                 array[1][0] = 1;
-            } else if (p.y == 2 && p.x == 0) {
+            } else if (p.x == 2 && p.y == 0) {
                 array[2][0] = 1;
-            } else if (p.y == 3 && p.x == 0) {
+            } else if (p.x == 3 && p.y == 0) {
                 array[3][0] = 1;
-            } else if (p.y == 4 && p.x == 0) {
+            } else if (p.x == 4 && p.y == 0) {
                 array[4][0] = 1;
             } 
-              else if (p.y == 0 && p.x == 1) {
+              else if (p.x == 0 && p.y == 1) {
                 array[0][1] = 1;
-            } else if (p.y == 1 && p.x == 1) {
+            } else if (p.x == 1 && p.y == 1) {
                 array[1][1] = 1;
-            } else if (p.y == 2 && p.x == 1) {
+            } else if (p.x == 2 && p.y == 1) {
                 array[2][1] = 1;
-            } else if (p.y == 3 && p.x == 1) {
+            } else if (p.x == 3 && p.y == 1) {
                 array[3][1] = 1;
-            } else if (p.y == 4 && p.x == 1) {
+            } else if (p.x == 4 && p.y == 1) {
                 array[4][1] = 1;
             } 
-              else if (p.y == 0 && p.x == 2) {
+              else if (p.x == 0 && p.y == 2) {
                 array[0][2] = 1;
-            } else if (p.y == 1 && p.x == 2) {
+            } else if (p.x == 1 && p.y == 2) {
                 array[1][2] = 1;
-            } else if (p.y == 2 && p.x == 2) {
+            } else if (p.x == 2 && p.y == 2) {
                 array[2][2] = 1;
-            } else if (p.y == 3 && p.x == 2) {
+            } else if (p.x == 3 && p.y == 2) {
                 array[3][2] = 1;
-            } else if (p.y == 4 && p.x == 2) {
+            } else if (p.x == 4 && p.y == 2) {
                 array[4][2] = 1;
             }
-             else if (p.y == 0 && p.x == 3) {
+             else if (p.x == 0 && p.y == 3) {
                 array[0][3] = 1;
-            } else if (p.y == 1 && p.x == 3) {
+            } else if (p.x == 1 && p.y == 3) {
                 array[1][3] = 1;
-            } else if (p.y == 2 && p.x == 3) {
+            } else if (p.x == 2 && p.y == 3) {
                 array[2][3] = 1;
-            } else if (p.y == 3 && p.x == 3) {
+            } else if (p.x == 3 && p.y == 3) {
                 array[3][3] = 1;
-            } else if (p.y == 4 && p.x == 3) {
+            } else if (p.x == 4 && p.y == 3) {
                 array[4][3] = 1;
             }
-              else if (p.y == 0 && p.x == 4) {
+              else if (p.x == 0 && p.y == 4) {
                 array[0][4] = 1;
-            } else if (p.y == 1 && p.x == 4) {
+            } else if (p.x == 1 && p.y == 4) {
                 array[1][4] = 1;
-            } else if (p.y == 2 && p.x == 4) {
+            } else if (p.x == 2 && p.y == 4) {
                 array[2][4] = 1;
-            } else if (p.y == 3 && p.x == 4) {
+            } else if (p.x == 3 && p.y == 4) {
                 array[3][4] = 1;
-            } else if (p.y == 4 && p.x == 4) {
+            } else if (p.x == 4 && p.y == 4) {
                 array[4][4] = 1;
             }
         }

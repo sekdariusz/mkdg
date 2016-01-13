@@ -718,12 +718,12 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
 
     private void InfoDylatacjaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InfoDylatacjaActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(null, "Dylatacja - jakaś tam definicja");
+        JOptionPane.showMessageDialog(null, "Dylatacja - jedno z przekształceń morfologicznych. Dylatacja służy do zamykania małych otworów oraz zatok we wnętrzu figury."+ "\n" + " Obiekty zwiększają swoją objętość i jeśli dwa lub więcej obiektów położonych jest blisko siebie, zrastają się w większe obiekty. ");
     }//GEN-LAST:event_InfoDylatacjaActionPerformed
 
     private void InfoErozjaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InfoErozjaActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(null, "Erozja - jakaś tam definicja");
+        JOptionPane.showMessageDialog(null, "Erozja - jedno z przekształceń morfologicznych. Jej działanie polega na obcinaniu brzegów obiektu na obrazie.");
 
     }//GEN-LAST:event_InfoErozjaActionPerformed
 
@@ -764,7 +764,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
        if(radioErozja.isSelected()){
             komentarzText.setContentType("text/html");
             komentarzText.setText("<b>EROZJA</b><br>"
-                    + "         <b>1.</b> Wybierany jest punkt A z obrazu PRZED. <br>"
+                    + "         <b>1.</b> Wybierany jest punkt A(0,0) z obrazu PRZED. <br>"
                     //+ "         <b>2.</b> Na punkt A nakładamy element strukturalny, tak, aby <font color = red>środek </font> pokrywał punkt A.<br>"
                     //+ "         <b>3.</b> Porównujemy, czy WSZYSTKIE punkty otoczenia A są tak zamalowane jak otoczenie <font color = red>środka </font> elementu strukturalnego.<br>"
                     //+ "         <b>4a.</b> Jeśli TAK: na obrazie PO w punkcie A' zamalowywany jest prostokąt<br>"
@@ -775,12 +775,12 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         } else if(radioDylatacja.isSelected()){
             komentarzText.setContentType("text/html");
             komentarzText.setText("<b>DYLATACJA</b><br>"
-                    + "         <b>1.</b> Wybierany jest punkt A z obrazu PRZED. <br>"
-                    + "         <b>2.</b> Na punkt A nakładamy element strukturalny, tak, aby <font color = red>środek </font> pokrywał punkt A.<br>"
-                    + "         <b>3.</b> Porównujemy, czy CHOĆ JEDEN punkt otoczenia A jest tak zamalowany jak otoczenie <font color = red>środka </font> elementu strukturalnego.<br>"
-                    + "         <b>4a.</b> Jeśli TAK: na obrazie PO w punkcie A' zamalowywany jest prostokąt<br>"
-                    + "         <b>4b.</b> Jeśli NIE: na obrazie PO w punkcie A' pozostaje pusty prostokąt<br>"
-                    + "         <b>5.</b> Wracamy do punktu 1.<br>"
+                    + "         <b>1.</b> Wybierany jest punkt A(0,0) z obrazu PRZED. <br>"
+                    //+ "         <b>2.</b> Na punkt A nakładamy element strukturalny, tak, aby <font color = red>środek </font> pokrywał punkt A.<br>"
+                    //+ "         <b>3.</b> Porównujemy, czy CHOĆ JEDEN punkt otoczenia A jest tak zamalowany jak otoczenie <font color = red>środka </font> elementu strukturalnego.<br>"
+                    //+ "         <b>4a.</b> Jeśli TAK: na obrazie PO w punkcie A' zamalowywany jest prostokąt<br>"
+                    //+ "         <b>4b.</b> Jeśli NIE: na obrazie PO w punkcie A' pozostaje pusty prostokąt<br>"
+                    //+ "         <b>5.</b> Wracamy do punktu 1.<br>"
             );
             
         
@@ -789,49 +789,106 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
                 
     }//GEN-LAST:event_startActionPerformed
 
+    int step = 1;
+    boolean shouldUpdate = true;
     // agata - moje przeróbki, wiem, brzydko to wygląda, ale inaczej nie moge tego wrzucic do okna po , niestety
-     private void dilate(int[][] obrazPrzed2, int[][] processedImage2 ,Point p){
+     private void dilate(int[][] originalImage, int[][] processedImage ,Point p){
 
         int i = p.x;
         int j = p.y;
         
-        elementNauka2 = makeStructuralElement2();
+        int[][] structuralElement = makeStructuralElement2();
         
         if(i >= 0 && j >= 0) {
+            processedImage[i][j] = originalImage[i][j];
         //for (int i=0; i<image.length; i++){
             //for (int j=0; j<image[i].length; j++){
-                if (obrazPrzed2[i][j] == 0){
-                    if (elementNauka2[1][0] == 1 && i>0 && obrazPrzed2[i-1][j] == 1) processedImage2[i][j] = DILATION_COLOR;
-                    if (elementNauka2[0][1] == 1 && j>0 && obrazPrzed2[i][j-1] == 1) processedImage2[i][j] = DILATION_COLOR;
-                    if (elementNauka2[1][2] == 1 && i+1<obrazPrzed2.length && obrazPrzed2[i+1][j] == 1) processedImage2[i][j] = DILATION_COLOR;
-                    if (elementNauka2[2][1] == 1 && j+1<obrazPrzed2[i].length && obrazPrzed2[i][j+1] == 1) processedImage2[i][j] = DILATION_COLOR;
+                 if (originalImage[i][j] == 0){
+                    if (structuralElement[1][0] == 1 && i>0 && originalImage[i-1][j] == 1) processedImage[i][j] = DILATION_COLOR;
+                    if (structuralElement[0][1] == 1 && j>0 && originalImage[i][j-1] == 1) processedImage[i][j] = DILATION_COLOR;
+                    if (structuralElement[1][2] == 1 && i+1<originalImage.length && originalImage[i+1][j] == 1) processedImage[i][j] = DILATION_COLOR;
+                    if (structuralElement[2][1] == 1 && j+1<originalImage[i].length && originalImage[i][j+1] == 1) processedImage[i][j] = DILATION_COLOR;
                     
-                    if (elementNauka2[0][0] == 1 && i>0 && j>0 && obrazPrzed2[i-1][j-1] == 1) processedImage2[i][j] = DILATION_COLOR;
-                    if (elementNauka2[2][0] == 1 && i>0 && j+1<obrazPrzed2[i].length && obrazPrzed2[i-1][j+1] == 1) processedImage2[i][j] = DILATION_COLOR;
-                    if (elementNauka2[0][2] == 1 && i+1<obrazPrzed2.length && j>0 && obrazPrzed2[i+1][j-1] == 1) processedImage2[i][j] = DILATION_COLOR;
-                    if (elementNauka2[2][2] == 1 && i+1<obrazPrzed2.length && j+1<obrazPrzed2[i].length && obrazPrzed2[i+1][j+1] == 1) processedImage2[i][j] = DILATION_COLOR;
+                    if (structuralElement[0][0] == 1 && i>0 && j>0 && originalImage[i-1][j-1] == 1) processedImage[i][j] = DILATION_COLOR;
+                    if (structuralElement[2][0] == 1 && i>0 && j+1<originalImage[i].length && originalImage[i-1][j+1] == 1) processedImage[i][j] = DILATION_COLOR;
+                    if (structuralElement[0][2] == 1 && i+1<originalImage.length && j>0 && originalImage[i+1][j-1] == 1) processedImage[i][j] = DILATION_COLOR;
+                    if (structuralElement[2][2] == 1 && i+1<originalImage.length && j+1<originalImage[i].length && originalImage[i+1][j+1] == 1) processedImage[i][j] = DILATION_COLOR;
                 }
             //}
         //}
         }
         
-        if (p.y + 1 < obrazPrzed2[0].length) {
-            p.y++;
-        } else {
-            if(p.x + 1 < obrazPrzed2.length) {
-                p.y = 0;
-                p.x++;
+        obrazPrzed.setStructuralElementPosition(p);
+        if(p.x == 0 && p.y == -1 && step == 1) {
+            komentarzText.setText("<b>DYLATACJA</b><br>"
+                    + "         <b>1.</b> Wybierany jest punkt A(0,0) z obrazu PRZED. <br>"
+                    + "         <b>2.</b> Na punkt A nakładamy element strukturalny, tak, aby <font color = red>środek </font> pokrywał punkt A.<br>"
+                    //+ "         <b>3.</b> Porównujemy, czy WSZYSTKIE punkty otoczenia A są tak zamalowane jak otoczenie <font color = red>środka </font> elementu strukturalnego.<br>"
+                    //+ "         <b>4a.</b> Jeśli TAK: na obrazie PO w punkcie A' zamalowywany jest prostokąt<br>"
+                    //+ "         <b>4b.</b> Jeśli NIE: na obrazie PO w punkcie A' pozostaje pusty prostokąt<br>"
+                    //+ "         <b>5.</b> Wracamy do punktu 1.<br>"
+            );
+            step = 2;
+            
+            if (p.y + 1 < originalImage[0].length) {
+                p.y++;
             } else {
-                p.y = 0;
-                p.x = 0;
+                if(p.x + 1 < originalImage.length) {
+                    p.y = 0;
+                    p.x++;
+                } else {
+                    p.y = 0;
+                    p.x = 0;
+                }
+            }
+            shouldUpdate = false;
+        } else if (step == 2) {
+            komentarzText.setText("<b>DYLATACJA</b><br>"
+                    + "         <b>1.</b> Wybierany jest punkt A(0,0) z obrazu PRZED. <br>"
+                    + "         <b>2.</b> Na punkt A nakładamy element strukturalny, tak, aby <font color = red>środek </font> pokrywał punkt A.<br>"
+                    + "         <b>3.</b> Porównujemy, czy WSZYSTKIE punkty otoczenia A są tak zamalowane jak otoczenie <font color = red>środka </font> elementu strukturalnego.<br>"
+                    //+ "         <b>4a.</b> Jeśli TAK: na obrazie PO w punkcie A' zamalowywany jest prostokąt<br>"
+                    //+ "         <b>4b.</b> Jeśli NIE: na obrazie PO w punkcie A' pozostaje pusty prostokąt<br>"
+                    //+ "         <b>5.</b> Wracamy do punktu 1.<br>"
+            );
+            step = 3;
+        }  else if (step == 3) {
+            komentarzText.setText("<b>DYLATACJA</b><br>"
+                    + "         <b>1.</b> Wybierany jest punkt A(0,0) z obrazu PRZED. <br>"
+                    + "         <b>2.</b> Na punkt A nakładamy element strukturalny, tak, aby <font color = red>środek </font> pokrywał punkt A.<br>"
+                    + "         <b>3.</b> Porównujemy, czy WSZYSTKIE punkty otoczenia A są tak zamalowane jak otoczenie <font color = red>środka </font> elementu strukturalnego.<br>"
+                    + "         <b>4a.</b> Jeśli TAK: na obrazie PO w punkcie A' zamalowywany jest prostokąt<br>"
+                    + "         <b>4b.</b> Jeśli NIE: na obrazie PO w punkcie A' pozostaje pusty prostokąt<br>"
+                    //+ "         <b>5.</b> Wracamy do punktu 1.<br>"
+            );
+            step = 4; 
+            shouldUpdate = true;
+        } else if (step == 4) {
+            komentarzText.setText("<b>DYLATACJA</b><br>"
+                    + "         <b>1.</b> Wybierany jest punkt A(0,0) z obrazu PRZED. <br>"
+                    + "         <b>2.</b> Na punkt A nakładamy element strukturalny, tak, aby <font color = red>środek </font> pokrywał punkt A.<br>"
+                    + "         <b>3.</b> Porównujemy, czy WSZYSTKIE punkty otoczenia A są tak zamalowane jak otoczenie <font color = red>środka </font> elementu strukturalnego.<br>"
+                    + "         <b>4a.</b> Jeśli TAK: na obrazie PO w punkcie A' zamalowywany jest prostokąt<br>"
+                    + "         <b>4b.</b> Jeśli NIE: na obrazie PO w punkcie A' pozostaje pusty prostokąt<br>"
+                    + "         <b>5.</b> Wracamy do punktu 1.<br>"
+            );
+            step = 5; 
+        }else  {
+            if (p.y + 1 < originalImage[0].length) {
+                p.y++;
+            } else {
+                if(p.x + 1 < originalImage.length) {
+                    p.y = 0;
+                    p.x++;
+                } else {
+                    p.y = 0;
+                    p.x = 0;
+                }
             }
         }
-        
-        obrazPrzed.setStructuralElementPosition(p);
     }
             
-     int step = 1;
-     boolean shouldUpdate = true;
+     
     private void erode(int[][] originalImage, int[][] processedImage ,Point p){
 
         int i = p.x;
@@ -972,8 +1029,8 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         if (radioErozja.isSelected()) {
             erode(makePrzed(), processedImage2, structuralElementPosition2);
             if(shouldUpdate) showImageAfterProcess2(processedImage2);
-        } else {
-            dilate(obrazPrzed2, processedImage2, structuralElementPosition2);
+        } else if (radioDylatacja.isSelected()){
+            dilate(makePrzed(), processedImage2, structuralElementPosition2);
             if(shouldUpdate) showImageAfterProcess2(processedImage2);
         } 
     }//GEN-LAST:event_nextActionPerformed
