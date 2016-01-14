@@ -6,9 +6,12 @@
 package mkdg;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -46,7 +49,6 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     private String lastChoosenPath;
     private ElementCanvas elementCanvas;
     private ElementNauka elementNauka;
-    private ElementCanvas elementGame;
     private PrzedNauka przedNauka;
     private BufferedImage zoomedImage;
     // agata - wiem, wiem, produkuję wiecej kodu, ale inaczej nie dam rady
@@ -62,6 +64,9 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     private final int DILATION_COLOR = 2;
     private final int EROSION_COLOR = 3;
     
+    //private ElementCanvas elementGame;
+    private GamePictureCanvas elementGame;
+       
     private boolean loadPreviousConfiguration = false;
     
     
@@ -71,9 +76,10 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     public MainFrame() {
         initComponents();
         initChooseElement();
-        initChooseElementGame();
+        //initChooseElementGame();
         ElementPan2();
         przed();
+        initGameElements();
         
         radioErozja.addItemListener(new ItemListener() {
             @Override
@@ -145,12 +151,12 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         elementPanel.add(elementCanvas);
     }
     
-    private void initChooseElementGame() {
-        int elementSize = ((int)((float)gameElementPanel.getHeight()-40)/3);
-        elementGame = new ElementCanvas(elementSize);
-        elementGame.setBounds((gameElementPanel.getWidth() - (elementSize+1)*3)/2, 20, (elementSize+1)*3, (elementSize+1)*3);
-        gameElementPanel.add(elementGame);
-    }
+//    private void initChooseElementGame() {
+//        int elementSize = ((int)((float)gameElementPanel.getHeight()-40)/3);
+//        elementGame = new ElementCanvas(elementSize);
+//        elementGame.setBounds((gameElementPanel.getWidth() - (elementSize+1)*3)/2, 20, (elementSize+1)*3, (elementSize+1)*3);
+//        gameElementPanel.add(elementGame);
+//    }
 
     
     // macierz dla nauki
@@ -170,6 +176,8 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         przedNauka.setBounds((przed.getWidth() - (elSize+1)*5)/2, 20, (elSize+1)*5, (elSize+1)*5);
         przed.add(przedNauka);
     }
+     
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -207,12 +215,12 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         filePathEditText = new javax.swing.JTextField();
         loadImageButton = new javax.swing.JButton();
         gamePanel = new javax.swing.JPanel();
-        gamePicBeforePanel = new javax.swing.JPanel();
-        gamePicAfterPanel = new javax.swing.JPanel();
-        elementPanel1 = new javax.swing.JPanel();
         gameDescriptionLabel = new javax.swing.JLabel();
+        MethodCbBox = new javax.swing.JComboBox<>();
+        gamePicBeforePanel = new javax.swing.JPanel();
+        checkButton = new javax.swing.JButton();
         gameElementPanel = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
+        gamePicAfterPanel = new javax.swing.JPanel();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -399,7 +407,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(po, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(82, Short.MAX_VALUE))
+                .addContainerGap(61, Short.MAX_VALUE))
         );
         programPanelLayout.setVerticalGroup(
             programPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -454,7 +462,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         zoomedImagePanel.setLayout(zoomedImagePanelLayout);
         zoomedImagePanelLayout.setHorizontalGroup(
             zoomedImagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 397, Short.MAX_VALUE)
+            .addGap(0, 429, Short.MAX_VALUE)
         );
         zoomedImagePanelLayout.setVerticalGroup(
             zoomedImagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -507,7 +515,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
                 .addGroup(teachPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(zoomedImagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(processButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(loadImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
+                    .addComponent(loadImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE)
                     .addComponent(filePathEditText, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
@@ -531,39 +539,36 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
 
         tabbedPane.addTab("Program", teachPanel);
 
-        gamePicBeforePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Obraz przed", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+        gameDescriptionLabel.setText("<html>Zasady gry:<br><br>Wybierz rodzaj przekształcenia i odgadnij jaki obraz powstanie<br>w wyniku dylatacji bądź erozji, mając do dyspozycji obraz wejściowy<br>  i element strukturalny.");
+        gameDescriptionLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+
+        MethodCbBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Dylatacja", "Erozja" }));
+        MethodCbBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MethodCbBoxActionPerformed(evt);
+            }
+        });
+
+        gamePicBeforePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Obraz wejściowy", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
         gamePicBeforePanel.setPreferredSize(new java.awt.Dimension(380, 380));
 
         javax.swing.GroupLayout gamePicBeforePanelLayout = new javax.swing.GroupLayout(gamePicBeforePanel);
         gamePicBeforePanel.setLayout(gamePicBeforePanelLayout);
         gamePicBeforePanelLayout.setHorizontalGroup(
             gamePicBeforePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 368, Short.MAX_VALUE)
+            .addGap(0, 393, Short.MAX_VALUE)
         );
         gamePicBeforePanelLayout.setVerticalGroup(
             gamePicBeforePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 356, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        gamePicAfterPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Obraz po", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
-        gamePicAfterPanel.setPreferredSize(new java.awt.Dimension(380, 380));
-
-        javax.swing.GroupLayout gamePicAfterPanelLayout = new javax.swing.GroupLayout(gamePicAfterPanel);
-        gamePicAfterPanel.setLayout(gamePicAfterPanelLayout);
-        gamePicAfterPanelLayout.setHorizontalGroup(
-            gamePicAfterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 368, Short.MAX_VALUE)
-        );
-        gamePicAfterPanelLayout.setVerticalGroup(
-            gamePicAfterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 356, Short.MAX_VALUE)
-        );
-
-        elementPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
-        elementPanel1.setPreferredSize(new java.awt.Dimension(400, 400));
-
-        gameDescriptionLabel.setText("<html>Zasady gry:<br>Wybierz rodzaj przekształcenia i odgadnij element strukturalny mając do dyspozycji obraz przed przekształceniami i po. </html>");
-        gameDescriptionLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        checkButton.setText("SPRAWDŹ");
+        checkButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkButtonActionPerformed(evt);
+            }
+        });
 
         gameElementPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Element strukturalny", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
 
@@ -571,80 +576,63 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         gameElementPanel.setLayout(gameElementPanelLayout);
         gameElementPanelLayout.setHorizontalGroup(
             gameElementPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 345, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         gameElementPanelLayout.setVerticalGroup(
             gameElementPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 318, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 209, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 149, Short.MAX_VALUE)
-        );
+        gamePicAfterPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Obraz wyjściowy", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+        gamePicAfterPanel.setPreferredSize(new java.awt.Dimension(380, 380));
 
-        javax.swing.GroupLayout elementPanel1Layout = new javax.swing.GroupLayout(elementPanel1);
-        elementPanel1.setLayout(elementPanel1Layout);
-        elementPanel1Layout.setHorizontalGroup(
-            elementPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(elementPanel1Layout.createSequentialGroup()
-                .addGroup(elementPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(gameDescriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(elementPanel1Layout.createSequentialGroup()
-                        .addGap(55, 55, 55)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(47, 47, 47)
-                .addComponent(gameElementPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        javax.swing.GroupLayout gamePicAfterPanelLayout = new javax.swing.GroupLayout(gamePicAfterPanel);
+        gamePicAfterPanel.setLayout(gamePicAfterPanelLayout);
+        gamePicAfterPanelLayout.setHorizontalGroup(
+            gamePicAfterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 393, Short.MAX_VALUE)
         );
-        elementPanel1Layout.setVerticalGroup(
-            elementPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(elementPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(gameDescriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, elementPanel1Layout.createSequentialGroup()
-                .addContainerGap(291, Short.MAX_VALUE)
-                .addComponent(gameElementPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+        gamePicAfterPanelLayout.setVerticalGroup(
+            gamePicAfterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 290, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout gamePanelLayout = new javax.swing.GroupLayout(gamePanel);
         gamePanel.setLayout(gamePanelLayout);
         gamePanelLayout.setHorizontalGroup(
             gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, gamePanelLayout.createSequentialGroup()
+            .addGroup(gamePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(elementPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 841, Short.MAX_VALUE)
+                .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(MethodCbBox, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(gamePicBeforePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(gameDescriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(gamePanelLayout.createSequentialGroup()
-                        .addComponent(gamePicBeforePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
-                        .addComponent(gamePicAfterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(checkButton, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(gameElementPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(gamePicAfterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         gamePanelLayout.setVerticalGroup(
             gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, gamePanelLayout.createSequentialGroup()
+            .addGroup(gamePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(elementPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 643, Short.MAX_VALUE)
+                .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(checkButton, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(gameElementPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(gamePanelLayout.createSequentialGroup()
+                        .addComponent(gameDescriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(MethodCbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(gamePicAfterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(gamePicBeforePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(gamePicBeforePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+                    .addComponent(gamePicAfterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        gamePicBeforePanel.getAccessibleContext().setAccessibleDescription("");
-        elementPanel1.getAccessibleContext().setAccessibleName("Element strukturalny do odgadnięcia");
 
         tabbedPane.addTab("Gra", gamePanel);
 
@@ -1034,9 +1022,103 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             if(shouldUpdate) showImageAfterProcess2(processedImage2);
         } 
     }//GEN-LAST:event_nextActionPerformed
+
+    private void MethodCbBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MethodCbBoxActionPerformed
+        String methodName = (String)MethodCbBox.getSelectedItem();
+        drawGamePictures(methodName);
+    }//GEN-LAST:event_MethodCbBoxActionPerformed
+
+    private void checkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkButtonActionPerformed
+//         if (radioErozja.isSelected()) {
+//            erode(makePrzed(), processedImage2, structuralElementPosition2);
+//            if(shouldUpdate) showImageAfterProcess2(processedImage2);
+//        } else if (radioDylatacja.isSelected()){
+//            dilate(makePrzed(), processedImage2, structuralElementPosition2);
+//            if(shouldUpdate) showImageAfterProcess2(processedImage2);
+//        } 
+        String methodName = (String)MethodCbBox.getSelectedItem();
+        if(checkAnswer(methodName))
+            checkButton.setBackground(new Color(100, 255, 150));
+        else
+           checkButton.setBackground(new Color(255, 100, 150)); 
+
+    }//GEN-LAST:event_checkButtonActionPerformed
    
    
+    private boolean checkAnswer(String methodName)
+    {
+        boolean answer;
+        
+        if(methodName == "Dylatacja")
+            answer = true;
+        else 
+            answer = false;
+        
+        return answer;
+    }
     
+    private void initGameElements() {
+        drawGamePictures("Dylatacja");
+    }
+    
+    private void drawGamePictures(String methodName)
+    {
+        GamePictureCanvas gamePictureBefore;
+        GamePictureCanvas gamePictureAfter;
+        int elementSize = ((int)((float)gameElementPanel.getHeight()-40)/3);
+        int elSizePic1 = ((int)((float)gamePicBeforePanel.getHeight()-40)/5);
+        int elSizePic2 = ((int)((float)gamePicAfterPanel.getHeight()-40)/5);
+        int[][] tilesBefore;
+        int[][] elementArray;
+        int[][] tilesAfter = new int[][]{
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 }};
+
+        if(methodName == "Dylatacja")
+        {           
+            elementArray = new int[][]{
+                { 0, 1, 0 },
+                { 1, 4, 1 },
+                { 0, 1, 0 }};
+            tilesBefore = new int[][]{
+                { 0, 0, 0, 1, 0 },
+                { 0, 1, 1, 0, 0 },
+                { 0, 1, 0, 0, 0 },
+                { 0, 1, 1, 0, 0 },
+                { 1, 1, 0, 0, 0 }};
+        }
+        else
+        {
+            elementArray = new int[][]{
+                { 0, 1, 0 },
+                { 0, 4, 1 },
+                { 0, 0, 0 }};
+            tilesBefore = new int[][]{
+                { 1, 0, 1, 0, 0 },
+                { 0, 1, 1, 1, 0 },
+                { 1, 1, 1, 0, 0 },
+                { 1, 1, 0, 0, 0 },
+                { 1, 1, 0, 0, 0 }};
+        }
+        
+        elementGame = new GamePictureCanvas(elementSize, elementArray);
+        elementGame.setBounds((gameElementPanel.getWidth() - (elementSize+1)*3)/2, 20, (elementSize+1)*3, (elementSize+1)*3);
+        gameElementPanel.removeAll();
+        gameElementPanel.add(elementGame);
+        
+        gamePictureBefore = new GamePictureCanvas(elSizePic1, tilesBefore);
+        gamePictureBefore.setBounds((gamePicBeforePanel.getWidth() - (elSizePic1+1)*5)/2, 20, (elSizePic1+1)*5, (elSizePic1+1)*5); 
+        gamePicBeforePanel.removeAll();
+        gamePicBeforePanel.add(gamePictureBefore);
+    
+        gamePictureAfter = new GamePictureCanvas(elSizePic2, tilesAfter, true);
+        gamePictureAfter.setBounds((gamePicAfterPanel.getWidth() - (elSizePic2+1)*5)/2, 20, (elSizePic2+1)*5, (elSizePic2+1)*5);
+        gamePicAfterPanel.removeAll();
+        gamePicAfterPanel.add(gamePictureAfter);      
+    }
     
     
     private void checkIfImagesAreLoded() {
@@ -1128,9 +1210,10 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     private javax.swing.JButton InfoElement;
     private javax.swing.JFrame InfoEro;
     private javax.swing.JButton InfoErozja;
+    private javax.swing.JComboBox<String> MethodCbBox;
     private javax.swing.JPanel binaryImagePanel;
+    private javax.swing.JButton checkButton;
     private javax.swing.JPanel elementPanel;
-    private javax.swing.JPanel elementPanel1;
     private javax.swing.JPanel elementPanel2;
     private javax.swing.ButtonGroup erodyl;
     private javax.swing.JTextField filePathEditText;
@@ -1140,7 +1223,6 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     private javax.swing.JPanel gamePicAfterPanel;
     private javax.swing.JPanel gamePicBeforePanel;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JEditorPane komentarzText;
     private javax.swing.JButton loadImageButton;
@@ -1218,7 +1300,5 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     	g.dispose();
     	return scaledBI;
     }
-
-
     
 }
