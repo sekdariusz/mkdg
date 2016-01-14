@@ -66,6 +66,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     
     //private ElementCanvas elementGame;
     private GamePictureCanvas elementGame;
+    GamePictureCanvas gamePictureAfter;
        
     private boolean loadPreviousConfiguration = false;
     
@@ -221,6 +222,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         checkButton = new javax.swing.JButton();
         gameElementPanel = new javax.swing.JPanel();
         gamePicAfterPanel = new javax.swing.JPanel();
+        resetButton = new javax.swing.JButton();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -580,7 +582,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         );
         gameElementPanelLayout.setVerticalGroup(
             gameElementPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 186, Short.MAX_VALUE)
         );
 
         gamePicAfterPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Obraz wyjściowy", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
@@ -597,6 +599,13 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             .addGap(0, 290, Short.MAX_VALUE)
         );
 
+        resetButton.setText("RESET");
+        resetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout gamePanelLayout = new javax.swing.GroupLayout(gamePanel);
         gamePanel.setLayout(gamePanelLayout);
         gamePanelLayout.setHorizontalGroup(
@@ -610,7 +619,9 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(gamePanelLayout.createSequentialGroup()
-                        .addComponent(checkButton, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(checkButton, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
+                            .addComponent(resetButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(gameElementPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(gamePicAfterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -620,13 +631,16 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(gamePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(checkButton, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(gameElementPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(gameElementPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(gamePanelLayout.createSequentialGroup()
                         .addComponent(gameDescriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(MethodCbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(MethodCbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(gamePanelLayout.createSequentialGroup()
+                        .addComponent(checkButton, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(resetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(gamePicBeforePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
@@ -1026,35 +1040,70 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     private void MethodCbBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MethodCbBoxActionPerformed
         String methodName = (String)MethodCbBox.getSelectedItem();
         drawGamePictures(methodName);
+        checkButton.setBackground(null);
+        checkButton.setText("SPRAWDŹ");
+       
     }//GEN-LAST:event_MethodCbBoxActionPerformed
 
     private void checkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkButtonActionPerformed
-//         if (radioErozja.isSelected()) {
-//            erode(makePrzed(), processedImage2, structuralElementPosition2);
-//            if(shouldUpdate) showImageAfterProcess2(processedImage2);
-//        } else if (radioDylatacja.isSelected()){
-//            dilate(makePrzed(), processedImage2, structuralElementPosition2);
-//            if(shouldUpdate) showImageAfterProcess2(processedImage2);
-//        } 
+
         String methodName = (String)MethodCbBox.getSelectedItem();
         if(checkAnswer(methodName))
+        {
             checkButton.setBackground(new Color(100, 255, 150));
+            checkButton.setText("DOBRZE!");
+        }
         else
+        {
            checkButton.setBackground(new Color(255, 100, 150)); 
+           checkButton.setText("ŹLE");
+        }
 
     }//GEN-LAST:event_checkButtonActionPerformed
+
+    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
+        String methodName = (String)MethodCbBox.getSelectedItem();
+        drawGamePictures(methodName);
+        checkButton.setBackground(null);
+        checkButton.setText("SPRAWDŹ");
+    }//GEN-LAST:event_resetButtonActionPerformed
    
    
     private boolean checkAnswer(String methodName)
     {
-        boolean answer;
-        
+        int[][] correctTiles;
         if(methodName == "Dylatacja")
-            answer = true;
+        {
+            correctTiles = new int[][]{
+                { 0, 1, 1, 1, 1 },
+                { 1, 1, 1, 1, 0 },
+                { 1, 1, 1, 0, 0 },
+                { 1, 1, 1, 1, 0 },
+                { 1, 1, 1, 0, 0 }};
+        }
         else 
-            answer = false;
-        
-        return answer;
+        {
+            correctTiles = new int[][]{
+                { 0, 0, 0, 0, 0 },
+                { 0, 0, 1, 0, 0 },
+                { 0, 1, 0, 0, 0 },
+                { 1, 0, 0, 0, 0 },
+                { 1, 0, 0, 0, 0 }};
+        }
+        return compareArrays(correctTiles, gamePictureAfter.getStructuralElementArray());
+    }
+    
+    private boolean compareArrays(int[][]array1, int[][]array2)
+    {
+        for(int x=0; x<array1.length; x++)
+        {
+            for(int y=0; y<array1[0].length; y++)
+            {
+                if(array1[x][y] != array2[x][y])
+                    return false;
+            }
+        }
+        return true;
     }
     
     private void initGameElements() {
@@ -1063,8 +1112,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     
     private void drawGamePictures(String methodName)
     {
-        GamePictureCanvas gamePictureBefore;
-        GamePictureCanvas gamePictureAfter;
+        GamePictureCanvas gamePictureBefore;        
         int elementSize = ((int)((float)gameElementPanel.getHeight()-40)/3);
         int elSizePic1 = ((int)((float)gamePicBeforePanel.getHeight()-40)/5);
         int elSizePic2 = ((int)((float)gamePicAfterPanel.getHeight()-40)/5);
@@ -1233,6 +1281,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     private javax.swing.JPanel przed;
     private javax.swing.JRadioButton radioDylatacja;
     private javax.swing.JRadioButton radioErozja;
+    private javax.swing.JButton resetButton;
     private javax.swing.JButton restart;
     private javax.swing.JButton start;
     private javax.swing.JTabbedPane tabbedPane;

@@ -112,5 +112,8 @@ public class GamePictureCanvas extends Canvas {
           
     }
     
+    public int[][] getStructuralElementArray() {
+        return tilesArray;
+    }
 
 }
