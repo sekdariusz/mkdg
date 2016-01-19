@@ -223,6 +223,23 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         gameElementPanel = new javax.swing.JPanel();
         gamePicAfterPanel = new javax.swing.JPanel();
         resetButton = new javax.swing.JButton();
+        gameResultPanel = new javax.swing.JPanel();
+        blackCorrectLabel = new javax.swing.JLabel();
+        blackWrongLabel = new javax.swing.JLabel();
+        whiteWrongLabel = new javax.swing.JLabel();
+        whiteCorrectLabel = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        blackNumberLabel = new javax.swing.JLabel();
+        whiteNumberLabel = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        correctSumLabel = new javax.swing.JLabel();
+        wrongSumLabel = new javax.swing.JLabel();
+        tilesNumberLabel = new javax.swing.JLabel();
+        gameResultLabel = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -578,11 +595,11 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         gameElementPanel.setLayout(gameElementPanelLayout);
         gameElementPanelLayout.setHorizontalGroup(
             gameElementPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 197, Short.MAX_VALUE)
         );
         gameElementPanelLayout.setVerticalGroup(
             gameElementPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 186, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         gamePicAfterPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Obraz wyjściowy", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
@@ -606,6 +623,143 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             }
         });
 
+        gameResultPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Wynik", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+
+        blackCorrectLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        blackCorrectLabel.setText("0");
+        blackCorrectLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        blackWrongLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        blackWrongLabel.setText("0");
+        blackWrongLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        whiteWrongLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        whiteWrongLabel.setText("0");
+        whiteWrongLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        whiteCorrectLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        whiteCorrectLabel.setText("0");
+        whiteCorrectLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        jLabel5.setText("dobrze");
+
+        jLabel7.setText("czarne");
+
+        jLabel8.setText("białe");
+
+        jLabel9.setText("suma");
+
+        blackNumberLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        blackNumberLabel.setText("0");
+        blackNumberLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 0, 204)));
+
+        whiteNumberLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        whiteNumberLabel.setText("0");
+        whiteNumberLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 0, 204)));
+
+        jLabel12.setText("suma");
+
+        correctSumLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        correctSumLabel.setText("0");
+        correctSumLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 0, 204)));
+
+        wrongSumLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        wrongSumLabel.setText("0");
+        wrongSumLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 0, 204)));
+
+        tilesNumberLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tilesNumberLabel.setText("25");
+        tilesNumberLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        gameResultLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        gameResultLabel.setText("WYNIK  0%");
+
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel6.setText("źle");
+
+        javax.swing.GroupLayout gameResultPanelLayout = new javax.swing.GroupLayout(gameResultPanel);
+        gameResultPanel.setLayout(gameResultPanelLayout);
+        gameResultPanelLayout.setHorizontalGroup(
+            gameResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(gameResultPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(gameResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(gameResultLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(gameResultPanelLayout.createSequentialGroup()
+                        .addGroup(gameResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(gameResultPanelLayout.createSequentialGroup()
+                                .addGroup(gameResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel8))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(gameResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(gameResultPanelLayout.createSequentialGroup()
+                                        .addComponent(whiteCorrectLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(whiteWrongLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(gameResultPanelLayout.createSequentialGroup()
+                                        .addComponent(blackCorrectLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(blackWrongLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(gameResultPanelLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel12)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(correctSumLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(wrongSumLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE))
+                            .addGroup(gameResultPanelLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(24, 24, 24)))
+                        .addGroup(gameResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(gameResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(gameResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(whiteNumberLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(blackNumberLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabel9))
+                            .addComponent(tilesNumberLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
+        );
+        gameResultPanelLayout.setVerticalGroup(
+            gameResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(gameResultPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(gameResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(gameResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(gameResultPanelLayout.createSequentialGroup()
+                        .addGroup(gameResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(blackCorrectLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(blackWrongLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(gameResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(whiteCorrectLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(whiteWrongLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8)))
+                    .addGroup(gameResultPanelLayout.createSequentialGroup()
+                        .addComponent(blackNumberLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(whiteNumberLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addGroup(gameResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(correctSumLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(wrongSumLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tilesNumberLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(gameResultLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout gamePanelLayout = new javax.swing.GroupLayout(gamePanel);
         gamePanel.setLayout(gamePanelLayout);
         gamePanelLayout.setHorizontalGroup(
@@ -613,34 +767,41 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
             .addGroup(gamePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(MethodCbBox, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(gamePicBeforePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(gameDescriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(gameDescriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
                     .addGroup(gamePanelLayout.createSequentialGroup()
-                        .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(checkButton, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
-                            .addComponent(resetButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(gameElementPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(gamePicAfterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(gamePicBeforePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(gamePanelLayout.createSequentialGroup()
+                                .addComponent(MethodCbBox, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(73, 73, 73)
+                                .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(resetButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(checkButton, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(gamePicAfterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(gamePanelLayout.createSequentialGroup()
+                        .addComponent(gameResultPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(gameElementPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         gamePanelLayout.setVerticalGroup(
             gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(gamePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(gameElementPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(gamePanelLayout.createSequentialGroup()
                         .addComponent(gameDescriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(MethodCbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(gamePanelLayout.createSequentialGroup()
-                        .addComponent(checkButton, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(resetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(MethodCbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(checkButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(resetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(gameElementPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(gameResultPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(gamePicBeforePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
@@ -1090,7 +1251,62 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
                 { 1, 0, 0, 0, 0 },
                 { 1, 0, 0, 0, 0 }};
         }
-        return compareArrays(correctTiles, gamePictureAfter.getStructuralElementArray());
+        int whitesNumber = countTiles(correctTiles, 0);
+        int blacksNumber = countTiles(correctTiles, 1);
+        
+        int correctWhitesNumber = countCorrectTiles(correctTiles, gamePictureAfter.getTilesArray(), 0);
+        int correctBlacksNumber = countCorrectTiles(correctTiles, gamePictureAfter.getTilesArray(), 1);
+        
+        int wrongWhitesNumber = whitesNumber - correctWhitesNumber;
+        int wrongBlacksNumber = blacksNumber - correctBlacksNumber;
+        
+        whiteCorrectLabel.setText(Integer.toString(correctWhitesNumber));
+        blackCorrectLabel.setText(Integer.toString(correctBlacksNumber));
+        
+        whiteNumberLabel.setText(Integer.toString(whitesNumber));
+        blackNumberLabel.setText(Integer.toString(blacksNumber));
+        
+        whiteWrongLabel.setText(Integer.toString(wrongWhitesNumber));
+        blackWrongLabel.setText(Integer.toString(wrongBlacksNumber));
+        
+        int correctSum = correctWhitesNumber + correctBlacksNumber;
+        correctSumLabel.setText(Integer.toString(correctSum));
+        wrongSumLabel.setText(Integer.toString(wrongWhitesNumber + wrongBlacksNumber));
+        
+        float result = (correctSum/25.0f) * 100.0f;
+        gameResultLabel.setText("WYNIK " + result + "%");
+                
+        return compareArrays(correctTiles, gamePictureAfter.getTilesArray());
+    }
+    
+    int countCorrectTiles(int[][]correctArray, int[][]answerarray, int value)
+    {
+        int sum = 0;
+        
+        for(int x=0; x<correctArray.length; x++)
+        {
+            for(int y=0; y<correctArray[0].length; y++)
+            {             
+                if(correctArray[x][y] == value &&  correctArray[x][y] == answerarray[x][y])
+                    sum ++;
+            }
+        }
+        
+        return sum;
+    }
+    
+    int countTiles(int[][]array, int value)
+    {
+        int result = 0;
+        for(int x=0; x<array.length; x++)
+        {
+            for(int y=0; y<array[0].length; y++)
+            {
+                if(array[x][y] == value)
+                    result ++;
+            }
+        }
+        return result;
     }
     
     private boolean compareArrays(int[][]array1, int[][]array2)
@@ -1260,7 +1476,11 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     private javax.swing.JButton InfoErozja;
     private javax.swing.JComboBox<String> MethodCbBox;
     private javax.swing.JPanel binaryImagePanel;
+    private javax.swing.JLabel blackCorrectLabel;
+    private javax.swing.JLabel blackNumberLabel;
+    private javax.swing.JLabel blackWrongLabel;
     private javax.swing.JButton checkButton;
+    private javax.swing.JLabel correctSumLabel;
     private javax.swing.JPanel elementPanel;
     private javax.swing.JPanel elementPanel2;
     private javax.swing.ButtonGroup erodyl;
@@ -1270,6 +1490,14 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     private javax.swing.JPanel gamePanel;
     private javax.swing.JPanel gamePicAfterPanel;
     private javax.swing.JPanel gamePicBeforePanel;
+    private javax.swing.JLabel gameResultLabel;
+    private javax.swing.JPanel gameResultPanel;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JEditorPane komentarzText;
@@ -1286,6 +1514,11 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     private javax.swing.JButton start;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JPanel teachPanel;
+    private javax.swing.JLabel tilesNumberLabel;
+    private javax.swing.JLabel whiteCorrectLabel;
+    private javax.swing.JLabel whiteNumberLabel;
+    private javax.swing.JLabel whiteWrongLabel;
+    private javax.swing.JLabel wrongSumLabel;
     private javax.swing.JPanel zoomedImagePanel;
     // End of variables declaration//GEN-END:variables
 

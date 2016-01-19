@@ -112,7 +112,7 @@ public class GamePictureCanvas extends Canvas {
           
     }
     
-    public int[][] getStructuralElementArray() {
+    public int[][] getTilesArray() {
         return tilesArray;
     }
 
