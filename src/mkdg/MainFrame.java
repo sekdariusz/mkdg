@@ -1247,7 +1247,8 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     }//GEN-LAST:event_resetButtonActionPerformed
 
     private void gameGenerateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameGenerateButtonActionPerformed
-        drawGamePictures((String)MethodCbBox.getSelectedItem());
+        //drawGamePictures((String)MethodCbBox.getSelectedItem());
+        resetBeforePanel();
         resetAfterPanel();
         resetResultTable();
     }//GEN-LAST:event_gameGenerateButtonActionPerformed
@@ -1270,18 +1271,20 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         {
             for(int y=0; y<originalPic[0].length; y++)
             {    
-                 if (originalPic[x][y] == 1){
-                     processedPic[x][y] = 1;
-                    if (structEl[1][0] == 1 && y>0) processedPic[x][y-1] = 1;
-                    if (structEl[0][1] == 1 && x>0) processedPic[x-1][y] = 1;
-                    if (structEl[1][2] == 1 && y+1<originalPic.length) processedPic[x][y+1] = 1;
-                    if (structEl[2][1] == 1 && x+1<originalPic[x].length) processedPic[x+1][y] = 1;
+                 if (originalPic[x][y] == 0){
+                     
+                    if ((structEl[1][0] == 1 && y>0) && (originalPic[x][y-1] == 1)) processedPic[x][y] = 1;
+                    if ((structEl[0][1] == 1 && x>0) && originalPic[x-1][y] == 1) processedPic[x][y] = 1;
+                    if ((structEl[1][2] == 1 && y+1<originalPic.length) && originalPic[x][y+1] == 1) processedPic[x][y] = 1;
+                    if ((structEl[2][1] == 1 && x+1<originalPic[x].length) && originalPic[x+1][y] == 1) processedPic[x][y] = 1;
                     
-                    if (structEl[0][0] == 1 && x>0 && y>0) processedPic[x-1][y-1] = 1;
-                    if (structEl[2][0] == 1 && y>0 && x+1<originalPic[x].length) processedPic[x+1][y-1] = 1;
-                    if (structEl[0][2] == 1 && y+1<originalPic.length && x>0) processedPic[x-1][y+1] = 1;
-                    if (structEl[2][2] == 1 && x+1<originalPic.length && y+1<originalPic[x].length) processedPic[x+1][y+1] = 1;
+                    if ((structEl[0][0] == 1 && x>0 && y>0) && originalPic[x-1][y-1] == 1) processedPic[x][y] = 1;
+                    if ((structEl[2][0] == 1 && y>0 && x+1<originalPic[x].length) && originalPic[x+1][y-1] == 1) processedPic[x][y] = 1;
+                    if ((structEl[0][2] == 1 && y+1<originalPic.length && x>0) && originalPic[x-1][y+1] == 1) processedPic[x][y] = 1;
+                    if ((structEl[2][2] == 1 && x+1<originalPic.length && y+1<originalPic[x].length) && originalPic[x+1][y+1] == 1) processedPic[x][y] = 1;
                 }
+                 else
+                     processedPic[x][y] = 1;
             }
         }  
         return processedPic;
@@ -1404,6 +1407,16 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         gamePicAfterPanel.add(gamePictureAfter);   
     }
     
+    public void resetBeforePanel()
+    {
+        int elSizePic = ((int)((float)gamePicBeforePanel.getHeight()-40)/5);
+        int[][] tilesBefore = generateRandomMatrix(5, false);
+        gamePictureBefore = new GamePictureCanvas(elSizePic, tilesBefore);
+        gamePictureBefore.setBounds((gamePicBeforePanel.getWidth() - (elSizePic+1)*5)/2, 20, (elSizePic+1)*5, (elSizePic+1)*5); 
+        gamePicBeforePanel.removeAll();
+        gamePicBeforePanel.add(gamePictureBefore);  
+    }
+    
     public void resetResultTable()
     {
         whiteCorrectLabel.setText("0");
@@ -1465,30 +1478,17 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     }
     
     private void initGameElements() {
-        drawGamePictures("Dylatacja");
-    }
-    
-    private void drawGamePictures(String methodName)
-    {   
         int elementSize = ((int)((float)gameElementPanel.getHeight()-40)/3);
-        int elSizePic1 = ((int)((float)gamePicBeforePanel.getHeight()-40)/5);
-        int[][] tilesBefore;
         int[][] elementArray;
 
         elementArray = generateRandomMatrix(3, true);
-        
-        tilesBefore = generateRandomMatrix(5, false);
-               
+                      
         elementGame = new GamePictureCanvas(elementSize, elementArray);
         elementGame.setBounds((gameElementPanel.getWidth() - (elementSize+1)*3)/2, 20, (elementSize+1)*3, (elementSize+1)*3);
         gameElementPanel.removeAll();
         gameElementPanel.add(elementGame);
-        
-        gamePictureBefore = new GamePictureCanvas(elSizePic1, tilesBefore);
-        gamePictureBefore.setBounds((gamePicBeforePanel.getWidth() - (elSizePic1+1)*5)/2, 20, (elSizePic1+1)*5, (elSizePic1+1)*5); 
-        gamePicBeforePanel.removeAll();
-        gamePicBeforePanel.add(gamePictureBefore);
-    
+
+        resetBeforePanel();
         resetAfterPanel();
     }
     
