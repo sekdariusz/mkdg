@@ -1475,10 +1475,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         int[][] tilesBefore;
         int[][] elementArray;
 
-        elementArray = new int[][]{
-            { 0, 0, 0 },
-            { 0, 4, 1 },
-            { 0, 0, 0 }};
+        elementArray = generateRandomMatrix(3, true);
         
         tilesBefore = generateRandomMatrix(5, false);
                
