@@ -521,17 +521,23 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="gameDescriptionLabel" alignment="0" pref="407" max="32767" attributes="0"/>
-                          <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="gamePicBeforePanel" min="-2" pref="405" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="gamePicBeforePanel" alignment="0" min="-2" pref="405" max="-2" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="MethodCbBox" min="-2" pref="122" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="73" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="generateStructElButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                              <Component id="MethodCbBox" alignment="0" max="32767" attributes="0"/>
+                                              <Component id="gameGenerateButton" alignment="0" pref="173" max="32767" attributes="0"/>
+                                          </Group>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="checkButton" pref="186" max="32767" attributes="0"/>
                                           <Component id="resetButton" max="32767" attributes="0"/>
-                                          <Component id="checkButton" pref="150" max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -555,21 +561,30 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <Component id="gameDescriptionLabel" min="-2" pref="94" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="MethodCbBox" min="-2" max="-2" attributes="0"/>
-                                  <Component id="checkButton" min="-2" pref="53" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="MethodCbBox" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Component id="gameGenerateButton" min="-2" pref="32" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="checkButton" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="resetButton" min="-2" pref="32" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="generateStructElButton" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
+                                  <Component id="resetButton" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
-                          <Component id="gameElementPanel" alignment="0" max="32767" attributes="0"/>
-                          <Component id="gameResultPanel" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="gameElementPanel" alignment="0" max="32767" attributes="0"/>
+                              <Component id="gameResultPanel" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="gamePicBeforePanel" alignment="0" pref="313" max="32767" attributes="0"/>
                           <Component id="gamePicAfterPanel" alignment="0" min="-2" pref="313" max="-2" attributes="0"/>
@@ -629,7 +644,7 @@
             </Container>
             <Component class="javax.swing.JButton" name="checkButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="SPRAWD&#x179;"/>
+                <Property name="text" type="java.lang.String" value="Sprawd&#x17a;"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkButtonActionPerformed"/>
@@ -684,7 +699,7 @@
             </Container>
             <Component class="javax.swing.JButton" name="resetButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="RESET"/>
+                <Property name="text" type="java.lang.String" value="Reset"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="resetButtonActionPerformed"/>
@@ -952,6 +967,22 @@
                 </Component>
               </SubComponents>
             </Container>
+            <Component class="javax.swing.JButton" name="gameGenerateButton">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Generuj Obraz"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gameGenerateButtonActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="generateStructElButton">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Generuj element strukturalny"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="generateStructElButtonActionPerformed"/>
+              </Events>
+            </Component>
           </SubComponents>
         </Container>
       </SubComponents>
