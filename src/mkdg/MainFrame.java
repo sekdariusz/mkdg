@@ -1229,45 +1229,27 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         //drawGamePictures(methodName);
         checkButton.setBackground(null);
         checkButton.setText("SPRAWDŹ");
-       
+        resetAfterPanel();
+       resetResultTable();
     }//GEN-LAST:event_MethodCbBoxActionPerformed
 
     private void checkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkButtonActionPerformed
-
         String methodName = (String)MethodCbBox.getSelectedItem();
-        if(checkAnswer(methodName))
-        {
-            checkButton.setBackground(new Color(100, 255, 150));
-            checkButton.setText("DOBRZE!");
-        }
-        else
-        {
-           checkButton.setBackground(new Color(255, 100, 150)); 
-           checkButton.setText("ŹLE");
-        }
+        checkAnswer(methodName);
     }//GEN-LAST:event_checkButtonActionPerformed
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
         String methodName = (String)MethodCbBox.getSelectedItem();
         //drawGamePictures(methodName);
-        int elSizePic = ((int)((float)gamePicAfterPanel.getHeight()-40)/5);
-        int[][] tilesAfter = new int[][]{
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 }};
-        gamePictureAfter = new GamePictureCanvas(elSizePic, tilesAfter, true);
-        gamePictureAfter.setBounds((gamePicAfterPanel.getWidth() - (elSizePic+1)*5)/2, 20, (elSizePic+1)*5, (elSizePic+1)*5);
-        gamePicAfterPanel.removeAll();
-        gamePicAfterPanel.add(gamePictureAfter);   
-        checkButton.setBackground(null);
-        checkButton.setText("SPRAWDŹ");
+        resetAfterPanel();
+        resetResultTable();
         //checkAnswer((String)MethodCbBox.getSelectedItem());
     }//GEN-LAST:event_resetButtonActionPerformed
 
     private void gameGenerateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameGenerateButtonActionPerformed
         drawGamePictures((String)MethodCbBox.getSelectedItem());
+        resetAfterPanel();
+        resetResultTable();
     }//GEN-LAST:event_gameGenerateButtonActionPerformed
 
     private void generateStructElButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateStructElButtonActionPerformed
@@ -1278,6 +1260,8 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         elementGame.setBounds((gameElementPanel.getWidth() - (elementSize+1)*3)/2, 20, (elementSize+1)*3, (elementSize+1)*3);
         gameElementPanel.removeAll();
         gameElementPanel.add(elementGame);
+        resetAfterPanel();
+        resetResultTable();
     }//GEN-LAST:event_generateStructElButtonActionPerformed
     
         private int[][] dilateGame(int[][] originalPic, int[][] processedPic ,int[][] structEl){
@@ -1405,6 +1389,38 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         return compareArrays(correctTiles, gamePictureAfter.getTilesArray());
     }
     
+    public void resetAfterPanel()
+    {
+        int elSizePic = ((int)((float)gamePicAfterPanel.getHeight()-40)/5);
+        int[][] tilesAfter = new int[][]{
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 }};
+        gamePictureAfter = new GamePictureCanvas(elSizePic, tilesAfter, true);
+        gamePictureAfter.setBounds((gamePicAfterPanel.getWidth() - (elSizePic+1)*5)/2, 20, (elSizePic+1)*5, (elSizePic+1)*5);
+        gamePicAfterPanel.removeAll();
+        gamePicAfterPanel.add(gamePictureAfter);   
+    }
+    
+    public void resetResultTable()
+    {
+        whiteCorrectLabel.setText("0");
+        blackCorrectLabel.setText("0");
+        
+        whiteNumberLabel.setText("0");
+        blackNumberLabel.setText("0");
+        
+        whiteWrongLabel.setText("0");
+        blackWrongLabel.setText("0");
+        
+        correctSumLabel.setText("0");
+        wrongSumLabel.setText("0");
+
+        gameResultLabel.setText("WYNIK " + "0" + "%");
+    }
+    
     int countCorrectTiles(int[][]correctArray, int[][]answerarray, int value)
     {
         int sum = 0;
@@ -1456,17 +1472,9 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
     {   
         int elementSize = ((int)((float)gameElementPanel.getHeight()-40)/3);
         int elSizePic1 = ((int)((float)gamePicBeforePanel.getHeight()-40)/5);
-        int elSizePic2 = ((int)((float)gamePicAfterPanel.getHeight()-40)/5);
         int[][] tilesBefore;
         int[][] elementArray;
-        int[][] tilesAfter = new int[][]{
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 }};
 
-        //elementArray = generateRandomMatrix(3, true);
         elementArray = new int[][]{
             { 0, 0, 0 },
             { 0, 4, 1 },
@@ -1484,10 +1492,7 @@ public class MainFrame extends javax.swing.JFrame implements ZoomCallback {
         gamePicBeforePanel.removeAll();
         gamePicBeforePanel.add(gamePictureBefore);
     
-        gamePictureAfter = new GamePictureCanvas(elSizePic2, tilesAfter, true);
-        gamePictureAfter.setBounds((gamePicAfterPanel.getWidth() - (elSizePic2+1)*5)/2, 20, (elSizePic2+1)*5, (elSizePic2+1)*5);
-        gamePicAfterPanel.removeAll();
-        gamePicAfterPanel.add(gamePictureAfter);      
+        resetAfterPanel();
     }
     
     
