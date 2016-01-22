@@ -236,6 +236,22 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
         Object source = e.getSource();
         if(source == dilationButton) {
             
+            if(autoErosionTimer != null) {
+                stopErodeClicked = false;
+                autoErosionTimer.cancel();
+                autoErosionTimer = null;
+            }
+            
+            structuralElementPosition = new Point(0,-1);
+            originalCanvas.setStructuralElementPosition(structuralElementPosition);
+            originalCanvas.hideStructuralElement();
+            originalCanvas.invalidate();
+            
+            if(erosionWholeButton != null) 
+                erosionWholeButton.setVisible(false);
+            if(autoErosionNextButton != null)
+                autoErosionNextButton.setVisible(false);
+            
             dilationWholeButton = new JButton();
             dilationWholeButton.setBounds(20, dilationButton.getX() + dilationButton.getWidth() + 10, width*originalCanvas.getTileSize() + 10 - 40, 25);
             dilationWholeButton.setText("Przetwórz cały");
@@ -259,11 +275,29 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
             
             processedImage = new int[rgbModel.getImageAsBinaryArray().length][rgbModel.getImageAsBinaryArray()[0].length];
             showImageAfterProcess(processedImage);
+            
+            pack();
 
         } else if (source == erosionButton) {
             
+            if(autoDilationTimer != null) {
+                stopDilateClicked = false;
+                autoDilationTimer.cancel();
+                autoDilationTimer = null;
+            }
+            
+            structuralElementPosition = new Point(0,-1);
+            originalCanvas.setStructuralElementPosition(structuralElementPosition);
+            originalCanvas.hideStructuralElement();
+            originalCanvas.invalidate();
+            
+            if(dilationWholeButton != null) 
+                dilationWholeButton.setVisible(false);
+            if(autoDilationNextButton != null) 
+                autoDilationNextButton.setVisible(false);
+            
             erosionWholeButton = new JButton();
-            erosionWholeButton.setBounds(20, dilationButton.getX() + dilationButton.getWidth() + 10, width*originalCanvas.getTileSize() + 10 - 40, 25);
+            erosionWholeButton.setBounds(20, erosionButton.getX() + erosionButton.getWidth() + 10, width*originalCanvas.getTileSize() + 10 - 40, 25);
             erosionWholeButton.setText("Przetwórz cały");
        
             c.fill = GridBagConstraints.HORIZONTAL;
@@ -274,7 +308,7 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
             erosionWholeButton.addActionListener(this);
             
             autoErosionNextButton = new JButton();
-            autoErosionNextButton.setBounds(20, dilationButton.getX() + dilationButton.getWidth() + 10, width*originalCanvas.getTileSize() + 10 - 40, 25);
+            autoErosionNextButton.setBounds(20, erosionButton.getX() + erosionButton.getWidth() + 10, width*originalCanvas.getTileSize() + 10 - 40, 25);
             autoErosionNextButton.setText("Krok po kroku");
        
             c.fill = GridBagConstraints.HORIZONTAL;
@@ -287,13 +321,15 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
             processedImage = new int[rgbModel.getImageAsBinaryArray().length][rgbModel.getImageAsBinaryArray()[0].length];
             showImageAfterProcess(processedImage);
             
+            pack();
+            
         } else if (source == dilationWholeButton) {
             
             if(autoDilationTimer != null) {
-                stopDilateClicked = false;
                 autoDilationTimer.cancel();
                 autoDilationTimer = null;
             }
+            stopDilateClicked = false;
             
             structuralElementPosition = new Point(0,-1);
             originalCanvas.setStructuralElementPosition(structuralElementPosition);
@@ -316,10 +352,10 @@ public class TransformationFrame extends javax.swing.JFrame implements ChangeLis
         } else if (source == erosionWholeButton) {
             
             if(autoErosionTimer != null) {
-                stopErodeClicked = false;
                 autoErosionTimer.cancel();
                 autoErosionTimer = null;
             }
+            stopErodeClicked = false;
             
             structuralElementPosition = new Point(0,-1);
             originalCanvas.setStructuralElementPosition(structuralElementPosition);
